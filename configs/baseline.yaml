@@ -1,0 +1,42 @@
+# Baseline: DQN (Double DQN, MLP 2x256, action masking), обучение ТОЛЬКО против random.
+# Все гиперпараметры зафиксированы заранее и НЕ подбирались по test-пулу.
+experiment: baseline_dqn
+seeds: [0, 1, 2, 3, 4]          # независимые запуски обучения -> mean ± std
+
+model:
+  hidden: [256, 256]           # вход 2x6x7 (свои/чужие фишки) -> 7 Q-значений
+
+train:
+  opponents: [random]          # пул соперников для обучения (train-пул)
+  episodes: 60000              # партий на один запуск (~10 мин CPU на сид)
+  gamma: 0.9                   # выбран по val (seed 0): при 0.99 ценности «размываются», см. README §4
+  lr: 0.0005
+  batch_size: 256
+  buffer_size: 100000
+  warmup_transitions: 5000     # до этого — только сбор опыта
+  train_every: 1               # шаг SGD на каждый ход агента
+  target_update_every: 1000    # жёсткое обновление target-сети (в шагах SGD)
+  double_dqn: true
+  target_clip: 1.0             # TD-цель обрезается до [-1, 1]: ценность игры с нулевой суммой не может быть больше
+  grad_clip: 10.0
+  eps_start: 1.0
+  eps_end: 0.05
+  eps_decay_episodes: 30000    # линейное затухание epsilon
+  log_every: 1000
+  val_every: 1000              # как часто считать val-метрику (выбор чекпойнта)
+
+eval:
+  # VAL: выбор чекпойнта/гиперпараметров. Соперники из того же «класса силы», что и train,
+  # плюс tactical; seed отличается от test.
+  val:
+    opponents: [random, tactical]
+    games_per_opponent: 200
+    seed: 1000
+    opening_plies: 2
+  # TEST: финальный отчёт, запускается ОДИН раз на выбранном чекпойнте.
+  # lookahead и kaggle_negamax никогда не участвуют ни в обучении, ни в выборе модели.
+  test:
+    opponents: [random, tactical, lookahead, kaggle_negamax]
+    games_per_opponent: 400
+    seed: 2000
+    opening_plies: 2
