@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+runs/**/*.log
+.DS_Store
+*.egg-info/
+build/
+dist/
+runs/smoke_*/
+results/smoke_*/
