@@ -171,7 +171,7 @@ def board_ascii(board: list[int], move: int, correct: list[int], mark: int) -> s
     for c in correct:
         marker[c] = "* " if c != move else "^*"
     return "\n".join(rows + ["0 1 2 3 4 5 6", "".join(marker).rstrip(),
-                             f"агент играет {sym[mark]}; ^ — ход агента, * — правильный ход"])
+                             f"Агент играет {sym[mark]}. Знак ^ показывает ход агента, знак * показывает правильные ходы."])
 
 
 def main() -> None:
@@ -254,119 +254,151 @@ def main() -> None:
     }
     dump_json(summary, res_dir / "summary.json")
 
-    # ------------------------------------------------------------------ таблица
+    # ------------------------------------------------------------------ текст отчёта
+    # Стиль: короткие предложения, русские термины, без точек с запятой и длинных тире.
+    names = {"random": "случайный", "tactical": "тактик", "lookahead": "поиск на 3 хода",
+             "kaggle_negamax": "агент Kaggle"}
+    name = lambda a: names.get(a, a)
+
+    def num(v: float, digits: int = 3, sign: bool = False) -> str:
+        return (f"{v:+.{digits}f}" if sign else f"{v:.{digits}f}").replace(".", ",").replace("-", "−")
+
+    def ci(pair, digits: int = 3, sign: bool = False) -> str:
+        return f"{num(pair[0], digits, sign)}–{num(pair[1], digits, sign)}"
+
+    def ci_text(pair, digits: int = 3, sign: bool = False) -> str:
+        return f"от {num(pair[0], digits, sign)} до {num(pair[1], digits, sign)}"
+
     d = summary["dqn_best"]
-    lines = ["| Агент | " + " | ".join(opponents) + " | **macro score** |", "|---" * (len(opponents) + 2) + "|"]
+    lines = ["| Агент | " + " | ".join(name(o) for o in opponents) + " | **Среднее** |",
+             "|---|" + "---:|" * (len(opponents) + 1)]
     for a, r in summary["references"].items():
-        lines.append(f"| {a} (эталон) | " + " | ".join(f"{r['per_opponent'][o]:.3f}" for o in opponents)
-                     + f" | {r['macro']:.3f} [{r['macro_ci95'][0]:.3f}, {r['macro_ci95'][1]:.3f}] |")
-    lines.append(f"| **DQN baseline** (best-val, {d['n_seeds']} сидов) | "
-                 + " | ".join(f"{d['per_opponent'][o]['mean']:.3f} ± {d['per_opponent'][o]['std']:.3f}" for o in opponents)
-                 + f" | **{d['macro_mean']:.3f} ± {d['macro_std']:.3f}** [{d['macro_ci95_hier'][0]:.3f}, {d['macro_ci95_hier'][1]:.3f}] |")
+        lines.append(f"| {name(a)} | " + " | ".join(num(r["per_opponent"][o]) for o in opponents)
+                     + f" | {num(r['macro'])} ({ci(r['macro_ci95'])}) |")
+    lines.append(f"| **DQN, веса по валидации, {d['n_seeds']} запусков** | "
+                 + " | ".join(f"{num(d['per_opponent'][o]['mean'])} ± {num(d['per_opponent'][o]['std'])}" for o in opponents)
+                 + f" | **{num(d['macro_mean'])} ± {num(d['macro_std'])}** ({ci(d['macro_ci95_hier'])}) |")
     if lasts:
         l = summary["dqn_last"]
-        lines.append(f"| DQN (последний чекпойнт) | "
-                     + " | ".join(f"{l['per_opponent'][o]['mean']:.3f} ± {l['per_opponent'][o]['std']:.3f}" for o in opponents)
-                     + f" | {l['macro_mean']:.3f} ± {l['macro_std']:.3f} |")
+        lines.append("| DQN, веса в конце обучения | "
+                     + " | ".join(f"{num(l['per_opponent'][o]['mean'])} ± {num(l['per_opponent'][o]['std'])}" for o in opponents)
+                     + f" | {num(l['macro_mean'])} ± {num(l['macro_std'])} |")
     table = "\n".join(lines)
 
-    seed_lines = ["| Train seed | Выбранный эпизод | Best val macro | Test best | Test last | Test opening=0 | Обучение, с |",
+    seed_lines = ["| Запуск | Партия, на которой выбраны веса | Валидация | Тест | Тест, веса в конце | Тест с пустой доски | Обучение, с |",
                   "|---|---:|---:|---:|---:|---:|---:|"]
     for r in summary["seed_table"]:
-        seed_lines.append(f"| {r['seed']} | {r['best_episode']} | {r['val_macro']:.4f} | {r['test_best']:.4f} | "
-                          f"{r['test_last']:.4f} | {r['test_opening0']:.4f} | {r['train_time_s']:.1f} |")
+        episode = f"{r['best_episode']:,}".replace(",", " ")
+        seed_lines.append(f"| {r['seed']} | {episode} | {num(r['val_macro'], 4)} | {num(r['test_best'], 4)} | "
+                          f"{num(r['test_last'], 4)} | {num(r['test_opening0'], 4)} | {num(r['train_time_s'], 1)} |")
     val = summary["validation"]
-    val_text = (f"Среднее best-val: **{val['mean']:.4f} ± {val['std']:.4f}**. "
-                f"Сабмишен выбирается по val: train seed **{val['selected_submission_seed']}**. "
-                "Это оценка, использованная для выбора чекпойнта, поэтому она оптимистична; "
-                "финальные выводы о качестве опираются на отдельный test. Val и test имеют разный пул соперников, "
-                "поэтому разность их macro score не является оценкой переобучения.")
+    val_text = (f"Средний лучший результат на валидации равен **{num(val['mean'], 4)} ± {num(val['std'], 4)}**. "
+                f"Агентом для Kaggle выбран запуск **{val['selected_submission_seed']}**, потому что у него лучшая валидация.\n\n"
+                "По валидации выбирались веса, поэтому её результат завышен. Выводы о качестве делаются только по тесту. "
+                "На валидации и на тесте разные наборы соперников. Поэтому разница между ними не показывает переобучение.")
 
     comp = summary["comparisons"]
-    comparison_lines = ["| Сравнение | Средняя разность macro score | 95% парный ДИ |",
-                        "|---|---:|---:|"]
-    for key, name in (("dqn_minus_random", "DQN − random"), ("best_minus_last", "best-val − last"),
-                      ("opening0_minus_opening2", "opening=0 − opening=2")):
+    comparison_lines = ["| Сравнение | Средняя разность | 95% доверительный интервал |", "|---|---:|---:|"]
+    for key, label in (("dqn_minus_random", "DQN минус случайный игрок"),
+                       ("best_minus_last", "веса по валидации минус веса в конце обучения"),
+                       ("opening0_minus_opening2", "партии с пустой доски минус партии с двумя случайными ходами")):
         c = comp[key]
-        comparison_lines.append(f"| {name} | {c['mean']:+.4f} | [{c['ci95'][0]:+.4f}, {c['ci95'][1]:+.4f}] |")
-    bl = comp["best_minus_last"]
+        comparison_lines.append(f"| {label} | {num(c['mean'], 4, True)} | {ci_text(c['ci95'], 4, True)} |")
+    bl, op = comp["best_minus_last"], comp["opening0_minus_opening2"]
     rq = [
-        "**RQ1 — помогает ли выбор best-val по сравнению с последним чекпойнтом?** "
-        f"Средняя парная разность {bl['mean']:+.4f}, 95% ДИ [{bl['ci95'][0]:+.4f}, {bl['ci95'][1]:+.4f}]. "
-        + ("ДИ включает ноль: уверенного преимущества нет. " if bl["ci95"][0] <= 0 <= bl["ci95"][1]
-           else "ДИ не включает ноль. ")
-        + "Правило best-val сохраняется независимо от результатов этой test-диагностики.",
-        "**RQ2 — насколько результат зависит от сида обучения?** "
-        f"Test macro по сидам: {', '.join(f'{v:.4f}' for v in d['macro_per_seed'])}; "
-        f"std={d['macro_std']:.4f}, диапазон={min(d['macro_per_seed']):.4f}–{max(d['macro_per_seed']):.4f}; "
-        f"средняя полуширина ДИ по партиям внутри одного сида={d['within_seed_ci_halfwidth']:.4f}. "
-        "Разброс оценивается по независимым запускам обучения, а не по повторам одного чекпойнта.",
-        "**RQ3 — меняется ли оценка при отказе от случайного дебюта?** "
-        f"При opening=0 macro={summary['dqn_best_opening0']['macro_mean']:.4f}, "
-        f"при opening=2 macro={d['macro_mean']:.4f}; парная разность "
-        f"{comp['opening0_minus_opening2']['mean']:+.4f}, 95% ДИ [{comp['opening0_minus_opening2']['ci95'][0]:+.4f}, "
-        f"{comp['opening0_minus_opening2']['ci95'][1]:+.4f}]. "
-        "Это разные распределения стартовых позиций, а не улучшение агента. "
-        "Парность сохраняется по train seed и RNG seed партии; сами дебюты в этом сравнении различаются.",
+        "**Вопрос 1. Лучше ли веса, выбранные по валидации, чем веса в конце обучения?**\n"
+        f"Средняя разность равна {num(bl['mean'], 4, True)}. Доверительный интервал лежит {ci_text(bl['ci95'], 4, True)}. "
+        + ("Он включает ноль, поэтому разницы нет. " if bl["ci95"][0] <= 0 <= bl["ci95"][1]
+           else "Он не включает ноль. ")
+        + "Правило выбора весов по валидации остаётся прежним при любом результате этой проверки.",
+        "**Вопрос 2. Насколько результат зависит от запуска обучения?**\n"
+        f"Результаты на тесте по запускам: {', '.join(num(v, 4) for v in d['macro_per_seed'])}. "
+        f"Стандартное отклонение равно {num(d['macro_std'], 4)}. "
+        f"Значения лежат в диапазоне {ci_text((min(d['macro_per_seed']), max(d['macro_per_seed'])), 4)}. "
+        f"Половина ширины доверительного интервала внутри одного запуска в среднем равна {num(d['within_seed_ci_halfwidth'], 4)}. "
+        "Разброс между запусками близок к шуму от конечного числа партий. Поэтому по одному запуску модели сравнивать нельзя.",
+        "**Вопрос 3. Влияют ли случайные первые ходы на оценку?**\n"
+        f"В партиях с пустой доски модель набирает {num(summary['dqn_best_opening0']['macro_mean'], 4)}. "
+        f"В обычных партиях с двумя случайными первыми ходами она набирает {num(d['macro_mean'], 4)}. "
+        f"Разность равна {num(op['mean'], 4, True)}, доверительный интервал лежит {ci_text(op['ci95'], 4, True)}. "
+        "Это разные условия начала партии, а не улучшение модели. "
+        "Запуски и случайность соперников в обоих вариантах одинаковые, а сами начала партий различаются.",
     ]
 
     uncertainty = (
-        "В таблице ± обозначает выборочное стандартное отклонение по train seeds; квадратные скобки — 95% ДИ. "
-        "Для DQN и разностей используется 2000 bootstrap-реплик: ресэмплируются train seeds, затем общие game_id "
-        "внутри каждой страты (соперник, сторона). Один набор game_id применяется ко всем моделям и обеим "
-        "сторонам сравнения; доли соперников и первого/второго хода фиксированы. Для эталонов ресэмплируются "
-        "только партии по тем же стратам. Это условная неопределённость для данного пула соперников; "
-        "неопределённость переноса на другие стратегии не оценена. При пяти train seeds интервалы приблизительны. "
-        "Bootstrap по одинаковым исходам даёт вырожденный ДИ и не доказывает нулевую вероятность победы. "
-        "В summary.json дополнительно сохранены интервалы Wilson для win rate каждого train seed отдельно "
-        "по сопернику и стороне; их нельзя подменять интервалами для score или объединять пять сидов "
-        "как независимые партии."
+        "Знак ± обозначает стандартное отклонение по запускам обучения. В скобках указан 95% доверительный интервал.\n\n"
+        "Интервалы считаются бутстрепом из 2000 повторений. В каждом повторении случайно перевыбираются запуски обучения, "
+        "а затем партии. Партии перевыбираются отдельно для каждого соперника и каждой стороны, "
+        "поэтому доли соперников и первого хода не меняются. Один и тот же набор партий используется "
+        "для всех моделей и для обеих сторон сравнения. Для эталонных игроков перевыбираются только партии.\n\n"
+        "Интервалы относятся только к этому набору соперников. Насколько результат перенесётся на других соперников, "
+        "они не показывают. При пяти запусках интервалы приблизительные.\n\n"
+        "Если все партии закончились одинаково, бутстреп даёт интервал нулевой ширины. Это не доказывает, что вероятность "
+        "победы равна нулю. Поэтому в summary.json дополнительно сохранены интервалы Уилсона для доли побед. "
+        "Они посчитаны отдельно для каждого запуска, соперника и стороны. Подменять ими интервалы для очков нельзя. "
+        "Объединять пять запусков как независимые партии тоже нельзя."
     )
     zero_examples = []
     for o in opponents:
         rs = [r for r in tests[0]["records"] if r["opponent"] == o and r["agent_first"]]
         if rs and all(r["result"] == 0 for r in rs):
-            ci = tests[0]["per_opponent"][o]["win_ci95_by_side"]["first"]
-            zero_examples.append(f"Например, seed {seeds[0]} первым против {o}: 0/{len(rs)} побед; "
-                                 f"95% Wilson для win rate [{ci[0]:.4f}, {ci[1]:.4f}].")
+            w = tests[0]["per_opponent"][o]["win_ci95_by_side"]["first"]
+            zero_examples.append(f"Пример. Запуск {seeds[0]} первым ходом против соперника «{name(o)}» выиграл 0 партий из {len(rs)}. "
+                                 f"Интервал Уилсона для доли побед лежит {ci_text(w, 4)}.")
 
-    side = ["| Соперник | DQN первым | DQN вторым | средняя длина партии |", "|---|---|---|---|"]
+    side = ["| Соперник | DQN ходит первым | DQN ходит вторым | Средняя длина партии, ходов |", "|---|---:|---:|---:|"]
     for o in opponents:
-        side.append(f"| {o} | {d['score_first'][o]:.3f} | {d['score_second'][o]:.3f} | {d['mean_length'][o]:.1f} |")
+        side.append(f"| {name(o)} | {num(d['score_first'][o])} | {num(d['score_second'][o])} | {num(d['mean_length'][o], 1)} |")
 
-    err = ["| Тип ошибки | random | tactical | lookahead | DQN baseline |", "|---|---|---|---|---|"]
-    for k, name in ERR_KEYS:
+    err_names = {"missed_win_rate": "Не взята победа в один ход",
+                 "missed_block_rate": "Не закрыта единственная угроза",
+                 "blunder_rate": "Сделан ход, после которого соперник сразу выигрывает"}
+    err = ["| Ошибка | случайный | тактик | поиск на 3 хода | DQN |", "|---|---:|---:|---:|---:|"]
+    for k, _ in ERR_KEYS:
         row = [summary["references"].get(a, {}).get(k) for a in ("random", "tactical", "lookahead")] + [d[k]]
-        err.append(f"| {name} | " + " | ".join("—" if v is None else f"{v:.3f}" for v in row) + " |")
+        err.append(f"| {err_names[k]} | " + " | ".join("нет данных" if v is None else f"{num(100 * v, 1)}%" for v in row) + " |")
 
-    err_slices = ["| Соперник | Пропущенные победы / возможности | Пропущенные блоки / возможности | Подставы / возможности |",
-                  "|---|---:|---:|---:|"]
+    err_slices = ["| Соперник | Пропущенные победы | Пропущенные блоки | Подставы |", "|---|---:|---:|---:|"]
     for o in opponents:
         counts = []
-        for num, den in (("missed_wins", "win_opps"), ("missed_blocks", "block_opps"), ("blunders", "safe_opps")):
-            n = sum(t["per_opponent"][o][num] for t in tests)
-            total = sum(t["per_opponent"][o][den] for t in tests)
-            counts.append(f"{n}/{total} ({n / total:.1%})" if total else "0/0 (нет возможностей)")
-        err_slices.append(f"| {o} | " + " | ".join(counts) + " |")
+        for n_key, d_key in (("missed_wins", "win_opps"), ("missed_blocks", "block_opps"), ("blunders", "safe_opps")):
+            n = sum(t["per_opponent"][o][n_key] for t in tests)
+            total = sum(t["per_opponent"][o][d_key] for t in tests)
+            counts.append(f"{n} из {total} ({num(100 * n / total, 1)}%)" if total else "не было случаев")
+        err_slices.append(f"| {name(o)} | " + " | ".join(counts) + " |")
 
-    # примеры ошибок: по одному на каждый тип из seed0
+    # примеры ошибок: по одному на каждый тип
+    kind_names = {"missed_win": "Пропущенная победа", "missed_block": "Пропущенный блок", "blunder": "Подстава"}
     ex_md = []
     seen = set()
     for t in tests:
         for e in t["examples"]:
             if e["kind"] not in seen:
                 seen.add(e["kind"])
-                ex_md.append(f"**{e['kind']}** (соперник `{e['opponent']}`, партия {e['game_id']}):\n```\n"
+                ex_md.append(f"**{kind_names.get(e['kind'], e['kind'])}.** Соперник «{name(e['opponent'])}», партия {e['game_id']}.\n```\n"
                              + board_ascii(e["board"], e["move"], e["correct"], e["mark"]) + "\n```")
     # Пустая строка после каждой таблицы: иначе Markdown продолжает таблицу следующим абзацем.
-    report = ["# Отчёт baseline ConnectX\n", "## Validation и выбор чекпойнта\n", "\n".join(seed_lines), "", val_text,
-              "\n## Test: score (W=1, D=0.5, L=0)\n", table,
-              "\n## Парные сравнения и исследовательские вопросы\n", "\n".join(comparison_lines), "", "\n\n".join(rq),
+    report = ["# Отчёт по базовой модели ConnectX\n",
+              "Отчёт собран автоматически из сохранённых партий командой "
+              "`python -m connectx_rl.report --config configs/baseline.yaml`. "
+              "За победу агент получает 1 очко, за ничью 0,5 очка, за поражение 0. "
+              "Основная метрика равна среднему числу очков по всем соперникам.\n",
+              "## Валидация и выбор весов\n", "\n".join(seed_lines), "", val_text,
+              "\n## Тест: средний результат против каждого соперника\n", table,
+              "\n## Парные сравнения\n",
+              "Все сравнения парные. Модели играют одни и те же партии. "
+              "Поэтому разность показывает различие моделей, а не то, какие партии им выпали.\n",
+              "\n".join(comparison_lines), "",
+              "\n## Исследовательские вопросы\n", "\n\n".join(rq),
               "\n## Неопределённость оценки\n", uncertainty, "", " ".join(zero_examples),
-              "\n## По сторонам\n", "\n".join(side),
-              "\n## Тактические ошибки (доля от возможностей ошибиться)\n", "\n".join(err),
-              "\n### Срез по соперникам\n", "\n".join(err_slices),
-              "\n## Примеры ошибок\n", "\n\n".join(ex_md)]
+              "\n## Результат в зависимости от стороны\n", "\n".join(side),
+              "\n## Тактические ошибки\n",
+              "Процент считается от тех случаев, когда такую ошибку вообще можно было совершить.\n",
+              "\n".join(err),
+              "\n### Ошибки DQN против каждого соперника\n", "\n".join(err_slices),
+              "\n## Примеры ошибок\n",
+              "Столбцы пронумерованы от 0 до 6 слева направо. Точка обозначает пустую клетку.\n",
+              "\n\n".join(ex_md)]
     (res_dir / "report.md").write_text("\n".join(report) + "\n")
     print("\n".join(report))
 
