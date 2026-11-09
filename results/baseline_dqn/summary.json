@@ -1,0 +1,638 @@
+{
+ "experiment": "baseline_dqn",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "test_cfg": {
+  "opponents": [
+   "random",
+   "tactical",
+   "lookahead",
+   "kaggle_negamax"
+  ],
+  "games_per_opponent": 400,
+  "seed": 2000,
+  "opening_plies": 2
+ },
+ "dqn_best": {
+  "n_seeds": 5,
+  "macro_mean": 0.29293749999999996,
+  "macro_std": 0.015421487140512747,
+  "macro_per_seed": [
+   0.30062500000000003,
+   0.3040625,
+   0.30374999999999996,
+   0.2678125,
+   0.28843749999999996
+  ],
+  "per_opponent": {
+   "random": {
+    "mean": 0.915,
+    "std": 0.009519716382329879
+   },
+   "tactical": {
+    "mean": 0.21400000000000002,
+    "std": 0.05252529152703486
+   },
+   "lookahead": {
+    "mean": 0.0,
+    "std": 0.0
+   },
+   "kaggle_negamax": {
+    "mean": 0.04275,
+    "std": 0.004183300132670379
+   }
+  },
+  "score_first": {
+   "random": 0.95,
+   "tactical": 0.2995,
+   "lookahead": 0.0,
+   "kaggle_negamax": 0.060499999999999984
+  },
+  "score_second": {
+   "random": 0.8799999999999999,
+   "tactical": 0.1285,
+   "lookahead": 0.0,
+   "kaggle_negamax": 0.025
+  },
+  "missed_win_rate": 0.2847519902020821,
+  "missed_block_rate": 0.8656011623683255,
+  "blunder_rate": 0.22040816326530613,
+  "mean_length": {
+   "random": 10.867,
+   "tactical": 16.694,
+   "lookahead": 13.061000000000002,
+   "kaggle_negamax": 17.6185
+  },
+  "illegal_rate": 0.0,
+  "macro_ci95_hier": [
+   0.27724687499999995,
+   0.30844062499999997
+  ],
+  "within_seed_ci_halfwidth": 0.012689843750000008
+ },
+ "dqn_last": {
+  "n_seeds": 5,
+  "macro_mean": 0.291375,
+  "macro_std": 0.01163742615443809,
+  "macro_per_seed": [
+   0.30343749999999997,
+   0.2878125,
+   0.30374999999999996,
+   0.2784375,
+   0.28343749999999995
+  ],
+  "per_opponent": {
+   "random": {
+    "mean": 0.9155,
+    "std": 0.014726676475023135
+   },
+   "tactical": {
+    "mean": 0.21125,
+    "std": 0.03962716871036839
+   },
+   "lookahead": {
+    "mean": 0.0,
+    "std": 0.0
+   },
+   "kaggle_negamax": {
+    "mean": 0.03875,
+    "std": 0.010193441518937557
+   }
+  },
+  "score_first": {
+   "random": 0.9579999999999999,
+   "tactical": 0.30550000000000005,
+   "lookahead": 0.0,
+   "kaggle_negamax": 0.056999999999999995
+  },
+  "score_second": {
+   "random": 0.873,
+   "tactical": 0.11699999999999999,
+   "lookahead": 0.0,
+   "kaggle_negamax": 0.020499999999999997
+  },
+  "missed_win_rate": 0.2914634146341463,
+  "missed_block_rate": 0.8663003663003663,
+  "blunder_rate": 0.22981366459627328,
+  "mean_length": {
+   "random": 10.819500000000001,
+   "tactical": 17.008499999999998,
+   "lookahead": 12.825999999999999,
+   "kaggle_negamax": 17.5475
+  },
+  "illegal_rate": 0.0
+ },
+ "dqn_best_opening0": {
+  "n_seeds": 5,
+  "macro_mean": 0.34093749999999995,
+  "macro_std": 0.017181817242364103,
+  "macro_per_seed": [
+   0.340625,
+   0.34375,
+   0.365625,
+   0.31749999999999995,
+   0.3371875
+  ],
+  "per_opponent": {
+   "random": {
+    "mean": 0.959,
+    "std": 0.008023403267940625
+   },
+   "tactical": {
+    "mean": 0.3405,
+    "std": 0.048336386397826635
+   },
+   "lookahead": {
+    "mean": 0.0,
+    "std": 0.0
+   },
+   "kaggle_negamax": {
+    "mean": 0.06425,
+    "std": 0.01621631123282974
+   }
+  },
+  "score_first": {
+   "random": 0.99,
+   "tactical": 0.484,
+   "lookahead": 0.0,
+   "kaggle_negamax": 0.08449999999999999
+  },
+  "score_second": {
+   "random": 0.9280000000000002,
+   "tactical": 0.197,
+   "lookahead": 0.0,
+   "kaggle_negamax": 0.044000000000000004
+  },
+  "missed_win_rate": 0.20175953079178885,
+  "missed_block_rate": 0.8921908893709327,
+  "blunder_rate": 0.09903121636167922,
+  "mean_length": {
+   "random": 9.197,
+   "tactical": 16.294999999999998,
+   "lookahead": 13.496,
+   "kaggle_negamax": 17.561999999999998
+  },
+  "illegal_rate": 0.0
+ },
+ "references": {
+  "random": {
+   "macro": 0.1434375,
+   "macro_ci95": [
+    0.1303125,
+    0.1565625
+   ],
+   "per_opponent": {
+    "random": 0.51125,
+    "tactical": 0.0325,
+    "lookahead": 0.0,
+    "kaggle_negamax": 0.03
+   },
+   "missed_win_rate": 0.7920883164673413,
+   "missed_block_rate": 0.8481087470449172,
+   "blunder_rate": 0.1925233644859813
+  },
+  "tactical": {
+   "macro": 0.4740625,
+   "macro_ci95": [
+    0.4578046875,
+    0.4903203125
+   ],
+   "per_opponent": {
+    "random": 0.96875,
+    "tactical": 0.5475,
+    "lookahead": 0.01875,
+    "kaggle_negamax": 0.36125
+   },
+   "missed_win_rate": 0.0,
+   "missed_block_rate": 0.0,
+   "blunder_rate": 0.0
+  },
+  "lookahead": {
+   "macro": 0.8453125,
+   "macro_ci95": [
+    0.8315625000000001,
+    0.85875
+   ],
+   "per_opponent": {
+    "random": 1.0,
+    "tactical": 0.96375,
+    "lookahead": 0.4725,
+    "kaggle_negamax": 0.945
+   },
+   "missed_win_rate": 0.0,
+   "missed_block_rate": 0.037352555701179554,
+   "blunder_rate": 0.0
+  }
+ },
+ "train": [
+  {
+   "seed": 0,
+   "best_val_macro": 0.58875,
+   "best_episode": 57000,
+   "train_time_s": 667.8,
+   "steps": 413887,
+   "updates": 349357,
+   "env": {
+    "python": "3.11.16",
+    "torch": "2.15.0",
+    "numpy": "2.4.6",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "processor": "arm"
+   }
+  },
+  {
+   "seed": 1,
+   "best_val_macro": 0.5675,
+   "best_episode": 51000,
+   "train_time_s": 646.6,
+   "steps": 413856,
+   "updates": 349318,
+   "env": {
+    "python": "3.11.16",
+    "torch": "2.15.0",
+    "numpy": "2.4.6",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "processor": "arm"
+   }
+  },
+  {
+   "seed": 2,
+   "best_val_macro": 0.56625,
+   "best_episode": 60000,
+   "train_time_s": 635.5,
+   "steps": 414119,
+   "updates": 349576,
+   "env": {
+    "python": "3.11.16",
+    "torch": "2.15.0",
+    "numpy": "2.4.6",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "processor": "arm"
+   }
+  },
+  {
+   "seed": 3,
+   "best_val_macro": 0.555,
+   "best_episode": 49000,
+   "train_time_s": 633.0,
+   "steps": 418973,
+   "updates": 354442,
+   "env": {
+    "python": "3.11.16",
+    "torch": "2.15.0",
+    "numpy": "2.4.6",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "processor": "arm"
+   }
+  },
+  {
+   "seed": 4,
+   "best_val_macro": 0.5650000000000001,
+   "best_episode": 51000,
+   "train_time_s": 649.3,
+   "steps": 412956,
+   "updates": 348430,
+   "env": {
+    "python": "3.11.16",
+    "torch": "2.15.0",
+    "numpy": "2.4.6",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
+    "processor": "arm"
+   }
+  }
+ ],
+ "validation": {
+  "mean": 0.5685,
+  "std": 0.012355413793151547,
+  "per_seed": [
+   0.58875,
+   0.5675,
+   0.56625,
+   0.555,
+   0.5650000000000001
+  ],
+  "selected_submission_seed": 0
+ },
+ "comparisons": {
+  "dqn_minus_random": {
+   "mean": 0.1495,
+   "std": 0.015421487140512745,
+   "per_seed": [
+    0.15718749999999998,
+    0.160625,
+    0.16031250000000002,
+    0.124375,
+    0.14500000000000002
+   ],
+   "ci95": [
+    0.12912500000000002,
+    0.170065625
+   ],
+   "same_openings": true
+  },
+  "best_minus_last": {
+   "mean": 0.0015624999999999997,
+   "std": 0.009970660083464887,
+   "per_seed": [
+    -0.0028125000000000003,
+    0.01625,
+    0.0,
+    -0.010625,
+    0.004999999999999999
+   ],
+   "ci95": [
+    -0.0090625,
+    0.01325
+   ],
+   "same_openings": true
+  },
+  "opening0_minus_opening2": {
+   "mean": 0.048,
+   "std": 0.009069501605656175,
+   "per_seed": [
+    0.04000000000000001,
+    0.0396875,
+    0.06187499999999999,
+    0.0496875,
+    0.04875
+   ],
+   "ci95": [
+    0.032496875,
+    0.06318906249999999
+   ],
+   "same_openings": false
+  }
+ },
+ "seed_table": [
+  {
+   "seed": 0,
+   "best_episode": 57000,
+   "val_macro": 0.58875,
+   "test_best": 0.30062500000000003,
+   "test_last": 0.30343749999999997,
+   "test_opening0": 0.340625,
+   "train_time_s": 667.8
+  },
+  {
+   "seed": 1,
+   "best_episode": 51000,
+   "val_macro": 0.5675,
+   "test_best": 0.3040625,
+   "test_last": 0.2878125,
+   "test_opening0": 0.34375,
+   "train_time_s": 646.6
+  },
+  {
+   "seed": 2,
+   "best_episode": 60000,
+   "val_macro": 0.56625,
+   "test_best": 0.30374999999999996,
+   "test_last": 0.30374999999999996,
+   "test_opening0": 0.365625,
+   "train_time_s": 635.5
+  },
+  {
+   "seed": 3,
+   "best_episode": 49000,
+   "val_macro": 0.555,
+   "test_best": 0.2678125,
+   "test_last": 0.2784375,
+   "test_opening0": 0.31749999999999995,
+   "train_time_s": 633.0
+  },
+  {
+   "seed": 4,
+   "best_episode": 51000,
+   "val_macro": 0.5650000000000001,
+   "test_best": 0.28843749999999996,
+   "test_last": 0.28343749999999995,
+   "test_opening0": 0.3371875,
+   "train_time_s": 649.3
+  }
+ ],
+ "win_ci95_by_seed_and_side": {
+  "0": {
+   "random": {
+    "first": [
+     0.9104218518612239,
+     0.972617354399236
+    ],
+    "second": [
+     0.8333528310151243,
+     0.9221362676743804
+    ]
+   },
+   "tactical": {
+    "first": [
+     0.29198627540431166,
+     0.4234788692450956
+    ],
+    "second": [
+     0.08197992706375512,
+     0.17234252098296743
+    ]
+   },
+   "lookahead": {
+    "first": [
+     0.0,
+     0.01884532637726656
+    ],
+    "second": [
+     0.0,
+     0.01884532637726656
+    ]
+   },
+   "kaggle_negamax": {
+    "first": [
+     0.05768744886219316,
+     0.1377657187671654
+    ],
+    "second": [
+     0.0008831687156009814,
+     0.027773704397892916
+    ]
+   }
+  },
+  "1": {
+   "random": {
+    "first": [
+     0.9042130012276914,
+     0.9690146582965411
+    ],
+    "second": [
+     0.8563983883518006,
+     0.9383368972826135
+    ]
+   },
+   "tactical": {
+    "first": [
+     0.2825979437674895,
+     0.41324410740946316
+    ],
+    "second": [
+     0.10289350642004404,
+     0.20048667530781522
+    ]
+   },
+   "lookahead": {
+    "first": [
+     0.0,
+     0.01884532637726656
+    ],
+    "second": [
+     0.0,
+     0.01884532637726656
+    ]
+   },
+   "kaggle_negamax": {
+    "first": [
+     0.030985341703458846,
+     0.0957869987723084
+    ],
+    "second": [
+     0.013820314340111342,
+     0.06389429245451922
+    ]
+   }
+  },
+  "2": {
+   "random": {
+    "first": [
+     0.923067931799067,
+     0.9795943679338476
+    ],
+    "second": [
+     0.8333528310151243,
+     0.9221362676743804
+    ]
+   },
+   "tactical": {
+    "first": [
+     0.27324086978416323,
+     0.4029780879203348
+    ],
+    "second": [
+     0.1199685532821731,
+     0.22265781539059548
+    ]
+   },
+   "lookahead": {
+    "first": [
+     0.0,
+     0.01884532637726656
+    ],
+    "second": [
+     0.0,
+     0.01884532637726656
+    ]
+   },
+   "kaggle_negamax": {
+    "first": [
+     0.023852543001492994,
+     0.08329670400181957
+    ],
+    "second": [
+     0.01072471965176127,
+     0.05717834040664197
+    ]
+   }
+  },
+  "3": {
+   "random": {
+    "first": [
+     0.9295293884777093,
+     0.9829444579914327
+    ],
+    "second": [
+     0.7883930940765792,
+     0.8886036307231068
+    ]
+   },
+   "tactical": {
+    "first": [
+     0.1199685532821731,
+     0.22265781539059548
+    ],
+    "second": [
+     0.049840585889759974,
+     0.12598948826714393
+    ]
+   },
+   "lookahead": {
+    "first": [
+     0.0,
+     0.01884532637726656
+    ],
+    "second": [
+     0.0,
+     0.01884532637726656
+    ]
+   },
+   "kaggle_negamax": {
+    "first": [
+     0.030985341703458846,
+     0.0957869987723084
+    ],
+    "second": [
+     0.01072471965176127,
+     0.05717834040664197
+    ]
+   }
+  },
+  "4": {
+   "random": {
+    "first": [
+     0.8859451911438936,
+     0.9578478281716571
+    ],
+    "second": [
+     0.8276574790170326,
+     0.9180200729362449
+    ]
+   },
+   "tactical": {
+    "first": [
+     0.2361394385684915,
+     0.36158714524618774
+    ],
+    "second": [
+     0.09028202279669323,
+     0.18366351872248404
+    ]
+   },
+   "lookahead": {
+    "first": [
+     0.0,
+     0.01884532637726656
+    ],
+    "second": [
+     0.0,
+     0.01884532637726656
+    ]
+   },
+   "kaggle_negamax": {
+    "first": [
+     0.020405632066152316,
+     0.07693206820093293
+    ],
+    "second": [
+     0.01072471965176127,
+     0.05717834040664197
+    ]
+   }
+  }
+ },
+ "uncertainty_method": {
+  "macro": "crossed bootstrap: model seeds and shared game IDs within opponent x seat strata",
+  "paired": "same resampled model/game indices for both agents; one reference realization shared across models",
+  "n_boot": 2000,
+  "bootstrap_seed": 0,
+  "scope": "conditional on fixed opponent implementations and opening distribution; not unseen-opponent uncertainty",
+  "zero_results": "bootstrap can degenerate; Wilson intervals for win probability reported separately by seed and seat"
+ }
+}

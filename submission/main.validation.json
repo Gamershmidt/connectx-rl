@@ -1,0 +1,38 @@
+{
+  "positions": 213,
+  "agreement": 1.0,
+  "max_torch_numpy_q_error": 0.0,
+  "checkpoint": "runs/baseline_dqn/seed0/best.pt",
+  "checkpoint_sha256": "0356e9566fb26ccda537b88bc2123490ab831be10fe9da619a8266d0e16adf12",
+  "submission_sha256": "b31c154dcbf580bfb9dd77ca02fb823f9cc0de88a8f162f1d3b90a53eb232a74",
+  "size_kb": 434.6,
+  "kaggle_env_games": [
+    {
+      "opponent": "random",
+      "rewards_agent": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        -1
+      ]
+    },
+    {
+      "opponent": "negamax",
+      "rewards_agent": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    }
+  ],
+  "kaggle_env_errors": 0
+}
