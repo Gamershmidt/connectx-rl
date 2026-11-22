@@ -4,6 +4,7 @@
   s_t   — позиция перед ходом агента (каноническая перспектива: свои/чужие фишки);
   a_t   — столбец 0..6 (только легальные; маска применяется и в выборе действия, и в max_a' Q);
   r_t   — +1 победа, -1 поражение, 0 ничья/игра продолжается (награда только в конце партии);
+          ДЗ2 (H4, train.shaping): дополнительно -κ за пропущенную победу или незакрытую угрозу;
   s_t+1 — позиция после хода агента И ответа соперника (соперник — часть среды).
 
 Источник идей: DQN (Mnih et al., 2015), Double DQN (van Hasselt et al., 2016).
@@ -30,10 +31,10 @@ from .utils import dump_json, env_info, load_config, set_seed, set_torch_threads
 
 
 class ReplayBuffer:
-    def __init__(self, capacity: int) -> None:
+    def __init__(self, capacity: int, n_planes: int = 2) -> None:
         self.cap = capacity
-        self.s = np.zeros((capacity, 2, ROWS, COLS), dtype=np.int8)
-        self.s2 = np.zeros((capacity, 2, ROWS, COLS), dtype=np.int8)
+        self.s = np.zeros((capacity, n_planes, ROWS, COLS), dtype=np.int8)
+        self.s2 = np.zeros((capacity, n_planes, ROWS, COLS), dtype=np.int8)
         self.mask2 = np.zeros((capacity, COLS), dtype=bool)
         self.a = np.zeros(capacity, dtype=np.int64)
         self.r = np.zeros(capacity, dtype=np.float32)
@@ -63,14 +64,30 @@ def epsilon(ep: int, c: dict) -> float:
     return c["eps_start"] + frac * (c["eps_end"] - c["eps_start"])
 
 
-def select_action(net: QNet, board: Board, eps: float, rng: np.random.Generator) -> int:
+def select_action(net: QNet, board: Board, eps: float, rng: np.random.Generator, features: str = "plain") -> int:
     legal = board.legal_moves()
     if rng.random() < eps:
         return legal[int(rng.integers(len(legal)))]
     with torch.no_grad():
-        q = net(torch.from_numpy(board.planes())[None])[0].numpy()
+        q = net(torch.from_numpy(board.planes(features))[None])[0].numpy()
     q[~board.legal_mask()] = -np.inf
     return int(np.argmax(q))
+
+
+def tactical_error(board: Board, a: int) -> str | None:
+    """Тактическая ошибка хода `a` в позиции до хода: та же классификация, что в evaluate._track.
+
+    "missed_win" — была немедленная победа, ход не туда; "missed_block" — у соперника ровно одна
+    немедленная угроза (своей победы нет), ход не закрыл её; иначе None.
+    """
+    me = board.to_move
+    wins = board.winning_moves(me)
+    if wins:
+        return None if a in wins else "missed_win"
+    threats = board.winning_moves(1 - me)
+    if len(threats) == 1 and a not in threats:
+        return "missed_block"
+    return None
 
 
 def sgd_step(net, target, opt, batch, c) -> float:
@@ -125,15 +142,22 @@ def train(cfg: dict, seed: int, out_dir: Path) -> dict:
         raise FileExistsError(f"Training output already exists: {out_dir}; choose a new --out/experiment")
     rng = np.random.default_rng(seed)
     out_dir.mkdir(parents=True, exist_ok=True)
-    net = QNet(cfg["model"]["hidden"], cfg["model"].get("conv", []))
+    features = cfg["model"].get("features", "plain")
+    # ДЗ2, H4: штраф за тактическую ошибку (пропущенная победа / незакрытая угроза) в награде
+    # перехода, независимо от того, наказал ли её соперник. {} (baseline) — награда только за исход.
+    shaping = {k: float(v) for k, v in (c.get("shaping") or {}).items()}
+    if set(shaping) - {"missed_win", "missed_block"} or any(v < 0 for v in shaping.values()):
+        raise ValueError("train.shaping: допустимы только неотрицательные missed_win / missed_block")
+    net = QNet(cfg["model"]["hidden"], cfg["model"].get("conv", []), features)
     target = copy.deepcopy(net)
     opt = torch.optim.Adam(net.parameters(), lr=c["lr"])
-    buf = ReplayBuffer(c["buffer_size"])
+    buf = ReplayBuffer(c["buffer_size"], 4 if features == "threats" else 2)
     opponents = [make_agent(o) for o in c["opponents"]]
     opp_rng = np.random.default_rng([seed, 7])
 
     history, window = [], []
     losses: list[float] = []
+    err_count = {"missed_win": 0, "missed_block": 0, "win_opps": 0, "block_opps": 0}
     n_steps = n_updates = 0
     best_val, best_ep = -1.0, -1
     t0 = time.time()
@@ -146,9 +170,17 @@ def train(cfg: dict, seed: int, out_dir: Path) -> dict:
             board.play(opp.act(board, opp_rng))
         outcome = 0.0
         while True:
-            s = board.planes().astype(np.int8)
-            a = select_action(net, board, eps, rng)
+            s = board.planes(features).astype(np.int8)
+            a = select_action(net, board, eps, rng, features)
             n_steps += 1
+            err = tactical_error(board, a)
+            if err:
+                err_count[err] += 1
+            if board.winning_moves(board.to_move):
+                err_count["win_opps"] += 1
+            elif len(board.winning_moves(1 - board.to_move)) == 1:
+                err_count["block_opps"] += 1
+            penalty = -shaping.get(err, 0.0) if err else 0.0
             if board.is_winning_move(a):
                 board.play(a)
                 buf.add(s, a, 1.0, None, None, 1.0)
@@ -156,7 +188,7 @@ def train(cfg: dict, seed: int, out_dir: Path) -> dict:
                 break
             board.play(a)
             if board.is_full():
-                buf.add(s, a, 0.0, None, None, 1.0)
+                buf.add(s, a, penalty, None, None, 1.0)
                 break
             o = opp.act(board, opp_rng)
             o_wins = board.is_winning_move(o)
@@ -166,9 +198,9 @@ def train(cfg: dict, seed: int, out_dir: Path) -> dict:
                 outcome = -1.0
                 break
             if board.is_full():
-                buf.add(s, a, 0.0, None, None, 1.0)
+                buf.add(s, a, penalty, None, None, 1.0)
                 break
-            buf.add(s, a, 0.0, board.planes().astype(np.int8), board.legal_mask(), 0.0)
+            buf.add(s, a, penalty, board.planes(features).astype(np.int8), board.legal_mask(), 0.0)
             if buf.size >= c["warmup_transitions"] and n_steps % c["train_every"] == 0:
                 losses.append(sgd_step(net, target, opt, buf.sample(c["batch_size"], rng), c))
                 n_updates += 1
@@ -181,8 +213,11 @@ def train(cfg: dict, seed: int, out_dir: Path) -> dict:
             row = dict(episode=ep, steps=n_steps, updates=n_updates, eps=round(eps, 4),
                        train_win=float((outs == 1).mean()), train_loss_rate=float((outs == -1).mean()),
                        train_len=float(np.mean([w[1] for w in window])),
-                       loss=float(np.mean(losses)) if losses else None, time_s=round(time.time() - t0, 1))
+                       loss=float(np.mean(losses)) if losses else None, time_s=round(time.time() - t0, 1),
+                       train_missed_win_rate=(err_count["missed_win"] / err_count["win_opps"]) if err_count["win_opps"] else None,
+                       train_missed_block_rate=(err_count["missed_block"] / err_count["block_opps"]) if err_count["block_opps"] else None)
             window, losses = [], []
+            err_count = dict.fromkeys(err_count, 0)
             if ep % c["val_every"] == 0:
                 v = validate(net, cfg["eval"]["val"])
                 row["val_macro"] = v["macro_score"]

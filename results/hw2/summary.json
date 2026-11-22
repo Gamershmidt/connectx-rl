@@ -1,0 +1,898 @@
+{
+ "test_cfg": {
+  "opponents": [
+   "random",
+   "tactical",
+   "lookahead",
+   "kaggle_negamax"
+  ],
+  "games_per_opponent": 400,
+  "seed": 3000,
+  "opening_plies": 2
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "arms": {
+  "baseline_dqn": {
+   "name": "baseline_dqn",
+   "n_seeds": 5,
+   "n_params": 89351,
+   "macro_mean": 0.2849375,
+   "macro_std": 0.009435740730064597,
+   "macro_per_seed": [
+    0.29000000000000004,
+    0.29593749999999996,
+    0.2884375,
+    0.2734375,
+    0.276875
+   ],
+   "macro_ci95": [
+    0.2731234375,
+    0.297
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.9100000000000001,
+     "std": 0.010897247358851682,
+     "first": 0.9490000000000001,
+     "second": 0.8710000000000001,
+     "mean_length": 10.52
+    },
+    "tactical": {
+     "mean": 0.1895,
+     "std": 0.020283151875386627,
+     "first": 0.272,
+     "second": 0.10699999999999998,
+     "mean_length": 17.262
+    },
+    "lookahead": {
+     "mean": 0.0,
+     "std": 0.0,
+     "first": 0.0,
+     "second": 0.0,
+     "mean_length": 13.111
+    },
+    "kaggle_negamax": {
+     "mean": 0.040249999999999994,
+     "std": 0.01591972047493297,
+     "first": 0.05550000000000001,
+     "second": 0.025,
+     "mean_length": 17.583499999999997
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.5685,
+   "val_best_per_seed": [
+    0.58875,
+    0.5675,
+    0.56625,
+    0.555,
+    0.5650000000000001
+   ],
+   "best_episode_mean": 53600.0,
+   "train_time_min": 10.774,
+   "steps_mean": 414758.2,
+   "updates_mean": 350224.6,
+   "missed_win_rate": 0.27818355033343917,
+   "missed_win_rate_by_opponent": {
+    "random": 0.22750424448217318,
+    "tactical": 0.409375,
+    "lookahead": null,
+    "kaggle_negamax": 0.5098039215686274
+   },
+   "missed_block_rate": 0.8635487826239271,
+   "missed_block_rate_by_opponent": {
+    "random": 0.8385579937304075,
+    "tactical": 0.8469656992084432,
+    "lookahead": 0.889763779527559,
+    "kaggle_negamax": 0.8641063515509602
+   },
+   "blunder_rate": 0.21193866374589265,
+   "blunder_rate_by_opponent": {
+    "random": 0.26153846153846155,
+    "tactical": 0.18892045454545456,
+    "lookahead": 0.2128099173553719,
+    "kaggle_negamax": 0.34831460674157305
+   }
+  },
+  "mix_mlp": {
+   "name": "mix_mlp",
+   "n_seeds": 5,
+   "n_params": 89351,
+   "macro_mean": 0.251,
+   "macro_std": 0.018094532582385203,
+   "macro_per_seed": [
+    0.26875,
+    0.2503125,
+    0.22312500000000002,
+    0.2653125,
+    0.2475
+   ],
+   "macro_ci95": [
+    0.23237500000000003,
+    0.268565625
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.78425,
+     "std": 0.03218112801006204,
+     "first": 0.8414999999999999,
+     "second": 0.727,
+     "mean_length": 15.104
+    },
+    "tactical": {
+     "mean": 0.16099999999999998,
+     "std": 0.036979724174201194,
+     "first": 0.238,
+     "second": 0.08399999999999999,
+     "mean_length": 18.868000000000002
+    },
+    "lookahead": {
+     "mean": 0.0,
+     "std": 0.0,
+     "first": 0.0,
+     "second": 0.0,
+     "mean_length": 13.981
+    },
+    "kaggle_negamax": {
+     "mean": 0.05874999999999999,
+     "std": 0.016369751067135993,
+     "first": 0.0695,
+     "second": 0.048,
+     "mean_length": 21.052500000000002
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.49799999999999994,
+   "val_best_per_seed": [
+    0.5287499999999999,
+    0.49375,
+    0.48,
+    0.5025,
+    0.485
+   ],
+   "best_episode_mean": 54200.0,
+   "train_time_min": 23.079999999999995,
+   "steps_mean": 544685.8,
+   "updates_mean": 480197.8,
+   "missed_win_rate": 0.5424311926605505,
+   "missed_win_rate_by_opponent": {
+    "random": 0.5617663499161543,
+    "tactical": 0.4539249146757679,
+    "lookahead": null,
+    "kaggle_negamax": 0.45408163265306123
+   },
+   "missed_block_rate": 0.703289296306282,
+   "missed_block_rate_by_opponent": {
+    "random": 0.7019762845849803,
+    "tactical": 0.7340974212034383,
+    "lookahead": 0.7269503546099291,
+    "kaggle_negamax": 0.6626951520131471
+   },
+   "blunder_rate": 0.16044399596367306,
+   "blunder_rate_by_opponent": {
+    "random": 0.15217391304347827,
+    "tactical": 0.15451055662188098,
+    "lookahead": 0.15606936416184972,
+    "kaggle_negamax": 0.2140221402214022
+   }
+  },
+  "cnn_random": {
+   "name": "cnn_random",
+   "n_seeds": 5,
+   "n_params": 89671,
+   "macro_mean": 0.26925,
+   "macro_std": 0.014753177623820574,
+   "macro_per_seed": [
+    0.255625,
+    0.2796875,
+    0.2509375,
+    0.2778125,
+    0.2821875
+   ],
+   "macro_ci95": [
+    0.25506093750000003,
+    0.2829390625
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.9105000000000001,
+     "std": 0.020186629238186368,
+     "first": 0.951,
+     "second": 0.8699999999999999,
+     "mean_length": 10.833499999999999
+    },
+    "tactical": {
+     "mean": 0.12225,
+     "std": 0.04053740556572411,
+     "first": 0.1535,
+     "second": 0.091,
+     "mean_length": 18.415
+    },
+    "lookahead": {
+     "mean": 0.0015,
+     "std": 0.0013693063937629153,
+     "first": 0.003,
+     "second": 0.0,
+     "mean_length": 12.6985
+    },
+    "kaggle_negamax": {
+     "mean": 0.042749999999999996,
+     "std": 0.008987839006123776,
+     "first": 0.0615,
+     "second": 0.024,
+     "mean_length": 16.938
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.534,
+   "val_best_per_seed": [
+    0.525,
+    0.53625,
+    0.49875,
+    0.5599999999999999,
+    0.55
+   ],
+   "best_episode_mean": 47600.0,
+   "train_time_min": 1130.282,
+   "steps_mean": 414319.0,
+   "updates_mean": 349787.2,
+   "missed_win_rate": 0.3318818040435459,
+   "missed_win_rate_by_opponent": {
+    "random": 0.2490721649484536,
+    "tactical": 0.6019736842105263,
+    "lookahead": 0.7692307692307693,
+    "kaggle_negamax": 0.514792899408284
+   },
+   "missed_block_rate": 0.8653275109170305,
+   "missed_block_rate_by_opponent": {
+    "random": 0.8674121405750799,
+    "tactical": 0.8329238329238329,
+    "lookahead": 0.8870523415977961,
+    "kaggle_negamax": 0.87518573551263
+   },
+   "blunder_rate": 0.21736630247268546,
+   "blunder_rate_by_opponent": {
+    "random": 0.17,
+    "tactical": 0.22294654498044328,
+    "lookahead": 0.21739130434782608,
+    "kaggle_negamax": 0.22058823529411764
+   }
+  },
+  "mix_cnn": {
+   "name": "mix_cnn",
+   "n_seeds": 5,
+   "n_params": 89671,
+   "macro_mean": 0.23674999999999996,
+   "macro_std": 0.019951846327470543,
+   "macro_per_seed": [
+    0.2234375,
+    0.22187500000000002,
+    0.235625,
+    0.23187499999999997,
+    0.2709375
+   ],
+   "macro_ci95": [
+    0.2208125,
+    0.25656249999999997
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.78725,
+     "std": 0.039393844696855855,
+     "first": 0.8395000000000001,
+     "second": 0.7350000000000001,
+     "mean_length": 15.691000000000003
+    },
+    "tactical": {
+     "mean": 0.10725,
+     "std": 0.05314631925166597,
+     "first": 0.14150000000000001,
+     "second": 0.073,
+     "mean_length": 20.109499999999997
+    },
+    "lookahead": {
+     "mean": 0.0005,
+     "std": 0.001118033988749895,
+     "first": 0.001,
+     "second": 0.0,
+     "mean_length": 13.988499999999998
+    },
+    "kaggle_negamax": {
+     "mean": 0.052000000000000005,
+     "std": 0.01144279249134581,
+     "first": 0.053000000000000005,
+     "second": 0.051000000000000004,
+     "mean_length": 19.9735
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.47325,
+   "val_best_per_seed": [
+    0.45625,
+    0.47125000000000006,
+    0.4675,
+    0.45875000000000005,
+    0.5125
+   ],
+   "best_episode_mean": 37600.0,
+   "train_time_min": 1160.7623333333333,
+   "steps_mean": 545398.4,
+   "updates_mean": 480904.2,
+   "missed_win_rate": 0.5954887218045113,
+   "missed_win_rate_by_opponent": {
+    "random": 0.5875262054507338,
+    "tactical": 0.6666666666666666,
+    "lookahead": 0.9285714285714286,
+    "kaggle_negamax": 0.4947916666666667
+   },
+   "missed_block_rate": 0.7204492535269141,
+   "missed_block_rate_by_opponent": {
+    "random": 0.7137462235649547,
+    "tactical": 0.7361725663716814,
+    "lookahead": 0.7384960718294051,
+    "kaggle_negamax": 0.6987850858818601
+   },
+   "blunder_rate": 0.18393939393939393,
+   "blunder_rate_by_opponent": {
+    "random": 0.17142857142857143,
+    "tactical": 0.16157556270096463,
+    "lookahead": 0.20315717227179136,
+    "kaggle_negamax": 0.19718309859154928
+   }
+  },
+  "tactical_mlp": {
+   "name": "tactical_mlp",
+   "n_seeds": 5,
+   "n_params": 89351,
+   "macro_mean": 0.2663125,
+   "macro_std": 0.022254959068149283,
+   "macro_per_seed": [
+    0.2784375,
+    0.28,
+    0.2290625,
+    0.2621875,
+    0.281875
+   ],
+   "macro_ci95": [
+    0.2429359375,
+    0.285753125
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.70825,
+     "std": 0.04955741619576226,
+     "first": 0.7575000000000001,
+     "second": 0.659,
+     "mean_length": 21.758999999999997
+    },
+    "tactical": {
+     "mean": 0.1625,
+     "std": 0.042966193105743025,
+     "first": 0.196,
+     "second": 0.129,
+     "mean_length": 24.039499999999997
+    },
+    "lookahead": {
+     "mean": 0.0075,
+     "std": 0.005303300858899106,
+     "first": 0.009,
+     "second": 0.006,
+     "mean_length": 17.2785
+    },
+    "kaggle_negamax": {
+     "mean": 0.187,
+     "std": 0.051966034580291004,
+     "first": 0.2085,
+     "second": 0.1655,
+     "mean_length": 26.687
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.46375,
+   "val_best_per_seed": [
+    0.50875,
+    0.4625,
+    0.4475,
+    0.46499999999999997,
+    0.435
+   ],
+   "best_episode_mean": 43600.0,
+   "train_time_min": 27.02566666666667,
+   "steps_mean": 664334.6,
+   "updates_mean": 599898.0,
+   "missed_win_rate": 0.7368952886194265,
+   "missed_win_rate_by_opponent": {
+    "random": 0.7793405219565557,
+    "tactical": 0.614713216957606,
+    "lookahead": 0.6341463414634146,
+    "kaggle_negamax": 0.48592592592592593
+   },
+   "missed_block_rate": 0.49688081427164277,
+   "missed_block_rate_by_opponent": {
+    "random": 0.5878300803673938,
+    "tactical": 0.5037700282752121,
+    "lookahead": 0.530690537084399,
+    "kaggle_negamax": 0.4106593782029382
+   },
+   "blunder_rate": 0.1612215909090909,
+   "blunder_rate_by_opponent": {
+    "random": 0.14803625377643503,
+    "tactical": 0.15406162464985995,
+    "lookahead": 0.15530153724871895,
+    "kaggle_negamax": 0.2175925925925926
+   }
+  }
+ },
+ "references": {
+  "random": {
+   "macro": 0.13125,
+   "macro_ci95": [
+    0.1178046875,
+    0.14407031249999996
+   ],
+   "per_opponent": {
+    "random": 0.47625,
+    "tactical": 0.025,
+    "lookahead": 0.0,
+    "kaggle_negamax": 0.02375
+   },
+   "missed_win_rate": 0.7990338164251207,
+   "missed_block_rate": 0.8472964943553178,
+   "blunder_rate": 0.22241379310344828
+  },
+  "tactical": {
+   "macro": 0.47,
+   "macro_ci95": [
+    0.4521875000000001,
+    0.4865625
+   ],
+   "per_opponent": {
+    "random": 0.97125,
+    "tactical": 0.50625,
+    "lookahead": 0.03375,
+    "kaggle_negamax": 0.36875
+   },
+   "missed_win_rate": 0.0,
+   "missed_block_rate": 0.0,
+   "blunder_rate": 0.0
+  },
+  "lookahead": {
+   "macro": 0.8540625,
+   "macro_ci95": [
+    0.8412499999999999,
+    0.868125
+   ],
+   "per_opponent": {
+    "random": 1.0,
+    "tactical": 0.9725,
+    "lookahead": 0.505,
+    "kaggle_negamax": 0.93875
+   },
+   "missed_win_rate": 0.0,
+   "missed_block_rate": 0.029084158415841586,
+   "blunder_rate": 0.0
+  }
+ },
+ "comparisons": {
+  "imp:mix_mlp": {
+   "mean": -0.033937499999999995,
+   "std": 0.022187059854789238,
+   "per_seed": [
+    -0.021249999999999998,
+    -0.045625000000000006,
+    -0.06531250000000001,
+    -0.008125000000000002,
+    -0.02937499999999999
+   ],
+   "ci95": [
+    -0.05487499999999999,
+    -0.013498437500000007
+   ],
+   "coefs": {
+    "mix_mlp": 1,
+    "baseline_dqn": -1
+   },
+   "kind": "improvement",
+   "name": "H1: смесь соперников",
+   "left": "mix_mlp",
+   "right": "baseline_dqn",
+   "expected_error": "missed_block_rate",
+   "error_before": 0.8635487826239271,
+   "error_after": 0.703289296306282,
+   "verdict": "✘ значимо хуже"
+  },
+  "imp:cnn_random": {
+   "mean": -0.0156875,
+   "std": 0.020425646409599867,
+   "per_seed": [
+    -0.034375,
+    -0.016249999999999997,
+    -0.0375,
+    0.004375,
+    0.0053124999999999995
+   ],
+   "ci95": [
+    -0.034503125,
+    0.0026265624999999926
+   ],
+   "coefs": {
+    "cnn_random": 1,
+    "baseline_dqn": -1
+   },
+   "kind": "improvement",
+   "name": "H2: свёрточная сеть",
+   "left": "cnn_random",
+   "right": "baseline_dqn",
+   "expected_error": "missed_win_rate",
+   "error_before": 0.27818355033343917,
+   "error_after": 0.3318818040435459,
+   "verdict": "○ шум: ДИ включает 0"
+  },
+  "imp:mix_cnn": {
+   "mean": -0.0481875,
+   "std": 0.02672779452180819,
+   "per_seed": [
+    -0.0665625,
+    -0.0740625,
+    -0.0528125,
+    -0.041562499999999995,
+    -0.0059375
+   ],
+   "ci95": [
+    -0.071190625,
+    -0.02431093750000001
+   ],
+   "coefs": {
+    "mix_cnn": 1,
+    "baseline_dqn": -1
+   },
+   "kind": "improvement",
+   "name": "H1+H2: оба изменения",
+   "left": "mix_cnn",
+   "right": "baseline_dqn",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "✘ значимо хуже"
+  },
+  "abl:cnn_random": {
+   "mean": -0.0325,
+   "std": 0.01980125864055111,
+   "per_seed": [
+    -0.03218750000000001,
+    -0.0578125,
+    -0.0153125,
+    -0.04593749999999999,
+    -0.011250000000000001
+   ],
+   "ci95": [
+    -0.051687500000000004,
+    -0.0130625
+   ],
+   "coefs": {
+    "mix_cnn": 1,
+    "cnn_random": -1
+   },
+   "kind": "ablation",
+   "name": "A1: убрать смесь соперников (mix_cnn → cnn_random)",
+   "left": "mix_cnn",
+   "right": "cnn_random",
+   "removed": "обучение снова только против random, сеть CNN остаётся",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "✘ значимо хуже"
+  },
+  "abl:mix_mlp": {
+   "mean": -0.014250000000000002,
+   "std": 0.03029122965067612,
+   "per_seed": [
+    -0.045312500000000006,
+    -0.028437499999999998,
+    0.0125,
+    -0.0334375,
+    0.0234375
+   ],
+   "ci95": [
+    -0.041125,
+    0.01312812499999998
+   ],
+   "coefs": {
+    "mix_cnn": 1,
+    "mix_mlp": -1
+   },
+   "kind": "ablation",
+   "name": "A2: убрать свёрточную сеть (mix_cnn → mix_mlp)",
+   "left": "mix_cnn",
+   "right": "mix_mlp",
+   "removed": "сеть снова MLP 2×256, смесь соперников остаётся",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "○ шум: ДИ включает 0"
+  },
+  "abl:tactical_mlp": {
+   "mean": -0.015312500000000001,
+   "std": 0.016042850335118132,
+   "per_seed": [
+    -0.009687499999999998,
+    -0.029687500000000002,
+    -0.005937499999999998,
+    0.0031249999999999976,
+    -0.034374999999999996
+   ],
+   "ci95": [
+    -0.034628125,
+    0.0028749999999999973
+   ],
+   "coefs": {
+    "mix_mlp": 1,
+    "tactical_mlp": -1
+   },
+   "kind": "ablation",
+   "name": "A3: убрать random из смеси (mix_mlp → tactical_mlp)",
+   "left": "mix_mlp",
+   "right": "tactical_mlp",
+   "removed": "в пуле соперников остаётся только tactical; сеть MLP",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "○ шум: ДИ включает 0"
+  },
+  "interaction": {
+   "mean": 0.001437500000000002,
+   "std": 0.033601089314559435,
+   "per_seed": [
+    -0.0109375,
+    -0.0121875,
+    0.05000000000000001,
+    -0.0378125,
+    0.018125
+   ],
+   "ci95": [
+    -0.0283171875,
+    0.03306718749999998
+   ],
+   "coefs": {
+    "mix_cnn": 1,
+    "mix_mlp": -1,
+    "cnn_random": -1,
+    "baseline_dqn": 1
+   },
+   "kind": "interaction",
+   "name": "Взаимодействие факторов",
+   "left": "",
+   "right": "",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "○ аддитивно (ДИ включает 0)"
+  }
+ },
+ "registry": {
+  "base_config": "configs/baseline.yaml",
+  "test": {
+   "opponents": [
+    "random",
+    "tactical",
+    "lookahead",
+    "kaggle_negamax"
+   ],
+   "games_per_opponent": 400,
+   "seed": 3000,
+   "opening_plies": 2
+  },
+  "arms": [
+   {
+    "name": "baseline_dqn",
+    "id": "H0",
+    "label": "Baseline ДЗ1: MLP 2×256, соперник random",
+    "factors": {
+     "mix": false,
+     "cnn": false
+    },
+    "reuse_runs": "runs/baseline_dqn",
+    "change": "нет (точка отсчёта)",
+    "hypothesis": "Точка отсчёта. Ожидаем ~0,29 на новом тесте, как и на тесте ДЗ1 (0,293 ± 0,015)."
+   },
+   {
+    "name": "mix_mlp",
+    "id": "H1",
+    "label": "H1: смесь соперников random+tactical, MLP",
+    "factors": {
+     "mix": true,
+     "cnn": false
+    },
+    "overrides": {
+     "train.opponents": [
+      "random",
+      "tactical"
+     ]
+    },
+    "change": "train.opponents: [random] → [random, tactical] (выбор соперника на партию равновероятный)",
+    "hypothesis": "Случайный соперник почти не создаёт угроз, поэтому baseline негде учиться защите и он пропускает 86,6% блоков. Тактик строит угрозы постоянно и наказывает за каждую незакрытую. Мы считаем, что обучение против смеси random+tactical даст сигнал для защиты, поэтому пробуем смесь 50/50 при той же сети и том же числе партий. Ожидание: рост macro score и снижение доли пропущенных блоков.",
+    "expected_error": "missed_block_rate"
+   },
+   {
+    "name": "cnn_random",
+    "id": "H2",
+    "label": "H2: свёрточная сеть (16,16)+FC128, соперник random",
+    "factors": {
+     "mix": false,
+     "cnn": true
+    },
+    "overrides": {
+     "model.conv": [
+      16,
+      16
+     ],
+     "model.hidden": [
+      128
+     ]
+    },
+    "change": "model: MLP 84→256→256→7 (89 351 парам.) → Conv3x3(2→16)→Conv3x3(16→16)→FC(672→128)→7 (89 671 парам.)",
+    "hypothesis": "«Четыре в ряд» — один и тот же локальный узор в любом месте доски, а baseline пропускает 28,5% побед в один ход, то есть не выучил даже этот простейший узор во всех 69 положениях. Мы считаем, что свёртка 3x3 с общими весами выучит узор один раз для всех положений, поэтому пробуем CNN с тем же числом параметров (чтобы отделить индуктивное смещение от ёмкости). Ожидание: рост macro score и снижение доли пропущенных побед в один ход.",
+    "expected_error": "missed_win_rate"
+   },
+   {
+    "name": "mix_cnn",
+    "id": "H1+H2",
+    "label": "H1+H2: смесь соперников и свёрточная сеть",
+    "factors": {
+     "mix": true,
+     "cnn": true
+    },
+    "overrides": {
+     "train.opponents": [
+      "random",
+      "tactical"
+     ],
+     "model.conv": [
+      16,
+      16
+     ],
+     "model.hidden": [
+      128
+     ]
+    },
+    "change": "оба изменения сразу",
+    "hypothesis": "Факторы действуют на разные слабости (нет сигнала о защите / плохо видна структура доски), поэтому мы считаем, что их эффекты сложатся: полная модель не хуже лучшего из одиночных улучшений."
+   },
+   {
+    "name": "tactical_mlp",
+    "id": "A3",
+    "label": "Абляция смеси: обучение только против tactical, MLP",
+    "factors": {
+     "mix": "tactical_only",
+     "cnn": false
+    },
+    "overrides": {
+     "train.opponents": [
+      "tactical"
+     ]
+    },
+    "change": "train.opponents: [random] → [tactical] (random из смеси убран)",
+    "hypothesis": "Проверка, что в H1 работает именно смесь, а не просто «более сильный соперник». Мы считаем, что против одного тактика агент в начале обучения почти не выигрывает, поэтому сигнал о победах беднеет, а навык использовать ошибки слабого соперника не формируется. Ожидание: tactical_mlp хуже mix_mlp по macro score, прежде всего против random."
+   }
+  ],
+  "ablations": [
+   {
+    "name": "A1: убрать смесь соперников (mix_cnn → cnn_random)",
+    "full": "mix_cnn",
+    "ablated": "cnn_random",
+    "removed": "обучение снова только против random, сеть CNN остаётся"
+   },
+   {
+    "name": "A2: убрать свёрточную сеть (mix_cnn → mix_mlp)",
+    "full": "mix_cnn",
+    "ablated": "mix_mlp",
+    "removed": "сеть снова MLP 2×256, смесь соперников остаётся"
+   },
+   {
+    "name": "A3: убрать random из смеси (mix_mlp → tactical_mlp)",
+    "full": "mix_mlp",
+    "ablated": "tactical_mlp",
+    "removed": "в пуле соперников остаётся только tactical; сеть MLP"
+   }
+  ],
+  "improvements": [
+   {
+    "name": "H1: смесь соперников",
+    "new": "mix_mlp",
+    "ref": "baseline_dqn",
+    "expected_error": "missed_block_rate"
+   },
+   {
+    "name": "H2: свёрточная сеть",
+    "new": "cnn_random",
+    "ref": "baseline_dqn",
+    "expected_error": "missed_win_rate"
+   },
+   {
+    "name": "H1+H2: оба изменения",
+    "new": "mix_cnn",
+    "ref": "baseline_dqn",
+    "expected_error": null
+   }
+  ]
+ },
+ "environment": {
+  "python": "3.11.16",
+  "torch": "2.15.0",
+  "numpy": "2.4.6",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "processor": "arm"
+ },
+ "checkpoints": {
+  "baseline_dqn": {
+   "0": "0356e9566fb26ccda537b88bc2123490ab831be10fe9da619a8266d0e16adf12",
+   "1": "2cc7dc8302c917e823cc77cc0861aa2b189445525c000a12b7f8fd8e82706ee4",
+   "2": "51819230e2023c01d9dde0b046772ccdcd3af3c386a1d218ef20bec98b03f6a1",
+   "3": "132792043d0b0c30096e092883661dc7d8d25545a031807da7eb414ecf9703aa",
+   "4": "4ded63e0ef6f10bc85f79cff16f67ce0c477f502166aa5a3390453f564cd6f39"
+  },
+  "mix_mlp": {
+   "0": "7de8f748e938f2e788c90caf4da4c778e88c01e5820ab95ef89ad7e995fdb3d6",
+   "1": "8aea10186df9deb51756fc2edefc757075272d103788e6abe7c132833b5cc385",
+   "2": "3ad2a7a524caee162c344318cfe50ac7b92f26f09e15c8c809d930db3c62d404",
+   "3": "461ace5f9699826c95aee5120f4ca3426d2b1b834d4374698fdcc0e60e7cd5ca",
+   "4": "0df7de165236cd5b688782d33a10cfdf16e8e054e6f04f186fcb3c7984685524"
+  },
+  "cnn_random": {
+   "0": "c5497d2f2bc7d108d4ddc428d25479bde25088b15841dbb57102fdab6de8a69e",
+   "1": "66cdedf5143c1cc9db4b5de203ddcbefdfae2c937e3d89af5336090e3c8162e6",
+   "2": "4060422e14106524b96afadbf309ddaa324aad11db42dc92dc859d05dbea1609",
+   "3": "21187807268a33f8dbd998b8163db95b96c1af5dab285084a0fc82d05c8c852c",
+   "4": "b090306294b86652e3a46b66050def0c1e3d027c5e6ee4da5834af8e622468ea"
+  },
+  "mix_cnn": {
+   "0": "3cc01eb899685bd892c91c732527df259fb4133ea694a93ca3f1604cabeff11a",
+   "1": "772e6af6be65086ad54bbb6fc6246da2c9ec9a1252208a0a7f8ea6d134b6e1ab",
+   "2": "04aeb32f70f4706390bff5a3e317b7ee4482da60d36b5bb3bde1e0e6855d3139",
+   "3": "b00e2267612d43bab67d6b8c3359d93234be73f95786efb766d7e670303d37f0",
+   "4": "5f7b2a2390b5bdf4ac2e3db5c8da547b4238eed937e969399b6ff313f74e5b19"
+  },
+  "tactical_mlp": {
+   "0": "f65773fe6060ebaf4b37014849a5ad393287d8102ea6763ebcda6711d9e91ccd",
+   "1": "43e5848ab003b461dfc1f73c82e219adf8290f986477f978acc97a4acaed7679",
+   "2": "2eaf9563770767fc38d8037da9c55c21f25668c28410baa117d34a5f4c8450e4",
+   "3": "fa18fc89e088b80947ea86b802e727c79410fbb51c136f74ff07124036201f4a",
+   "4": "15f790d9323be61559baf3e85e393d4c98670bf84be1b98aaa89015543dd4296"
+  }
+ },
+ "fairness": {
+  "val_identical": true,
+  "test_identical": true,
+  "val_seed": 1000,
+  "test_seed": 3000,
+  "hw1_test_seed": 2000,
+  "shared_train_keys": [
+   "episodes",
+   "gamma",
+   "lr",
+   "batch_size",
+   "buffer_size",
+   "warmup_transitions",
+   "train_every",
+   "target_update_every",
+   "double_dqn",
+   "target_clip",
+   "grad_clip",
+   "eps_start",
+   "eps_end",
+   "eps_decay_episodes",
+   "log_every",
+   "val_every"
+  ],
+  "differing_train_keys": [
+   "opponents"
+  ],
+  "checkpoint_rule": "best.pt = максимум val_macro по истории обучения (проверено для каждого сида)"
+ }
+}

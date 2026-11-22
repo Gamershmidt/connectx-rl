@@ -1,0 +1,52 @@
+# Сгенерировано: python -m connectx_rl.hw2 --stage configs (из configs/hw2/experiments.yaml).
+# Плечо cnn_random: H2: свёрточная сеть (16,16)+FC128, соперник random
+# Отличия от configs/baseline.yaml: model: MLP 84→256→256→7 (89 351 парам.) → Conv3x3(2→16)→Conv3x3(16→16)→FC(672→128)→7 (89 671 парам.)
+experiment: cnn_random
+seeds:
+- 0
+- 1
+- 2
+- 3
+- 4
+model:
+  hidden:
+  - 128
+  conv:
+  - 16
+  - 16
+train:
+  opponents:
+  - random
+  episodes: 60000
+  gamma: 0.9
+  lr: 0.0005
+  batch_size: 256
+  buffer_size: 100000
+  warmup_transitions: 5000
+  train_every: 1
+  target_update_every: 1000
+  double_dqn: true
+  target_clip: 1.0
+  grad_clip: 10.0
+  eps_start: 1.0
+  eps_end: 0.05
+  eps_decay_episodes: 30000
+  log_every: 1000
+  val_every: 1000
+eval:
+  val:
+    opponents:
+    - random
+    - tactical
+    games_per_opponent: 200
+    seed: 1000
+    opening_plies: 2
+  test:
+    opponents:
+    - random
+    - tactical
+    - lookahead
+    - kaggle_negamax
+    games_per_opponent: 400
+    seed: 3000
+    opening_plies: 2

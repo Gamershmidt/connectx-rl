@@ -1,0 +1,111 @@
+# ДЗ2: улучшения baseline, трекинг экспериментов, абляции.
+#
+# План — факторный 2x2. Два улучшения (факторы) предзарегистрированы в README ДЗ1 (§1, H1 и H2):
+#   mix — пул тренировочных соперников random+tactical (50/50) вместо только random;
+#   cnn — свёрточная сеть 3x3 вместо полносвязной, при том же числе параметров.
+# Четыре плеча покрывают все сочетания: baseline (ни одного), по одному, оба.
+# Абляции — это удаление одного фактора из полной модели (mix_cnn), т.е. оставшиеся два плеча.
+#
+# ВСЁ, кроме перечисленных override'ов, наследуется из configs/baseline.yaml без изменений:
+# оптимизатор, lr, gamma, буфер, epsilon, число партий (60 000), валидация (seed 1000).
+# Гиперпараметры в ДЗ2 не подбирались вообще.
+
+base_config: configs/baseline.yaml
+
+# Новый тестовый набор партий для ДЗ2. Тест ДЗ1 (seed 2000) уже просмотрен при анализе ошибок
+# и формулировке гипотез, поэтому он не годится для их проверки (README ДЗ1 §5, риск 4).
+# Seed 3000 ни разу не использовался ни при обучении, ни при подборе, ни при валидации.
+test:
+  opponents: [random, tactical, lookahead, kaggle_negamax]
+  games_per_opponent: 400
+  seed: 3000
+  opening_plies: 2
+
+arms:
+  - name: baseline_dqn
+    id: H0
+    label: "Baseline ДЗ1: MLP 2×256, соперник random"
+    factors: {mix: false, cnn: false}
+    reuse_runs: runs/baseline_dqn       # чекпойнты ДЗ1; переобучение не нужно, только новый тест
+    change: "нет (точка отсчёта)"
+    hypothesis: "Точка отсчёта. Ожидаем ~0,29 на новом тесте, как и на тесте ДЗ1 (0,293 ± 0,015)."
+
+  - name: mix_mlp
+    id: H1
+    label: "H1: смесь соперников random+tactical, MLP"
+    factors: {mix: true, cnn: false}
+    overrides:
+      train.opponents: [random, tactical]
+    change: "train.opponents: [random] → [random, tactical] (выбор соперника на партию равновероятный)"
+    hypothesis: >-
+      Случайный соперник почти не создаёт угроз, поэтому baseline негде учиться защите и он пропускает
+      86,6% блоков. Тактик строит угрозы постоянно и наказывает за каждую незакрытую. Мы считаем, что
+      обучение против смеси random+tactical даст сигнал для защиты, поэтому пробуем смесь 50/50 при
+      той же сети и том же числе партий. Ожидание: рост macro score и снижение доли пропущенных блоков.
+    expected_error: missed_block_rate
+
+  - name: cnn_random
+    id: H2
+    label: "H2: свёрточная сеть (16,16)+FC128, соперник random"
+    factors: {mix: false, cnn: true}
+    overrides:
+      model.conv: [16, 16]
+      model.hidden: [128]
+    change: "model: MLP 84→256→256→7 (89 351 парам.) → Conv3x3(2→16)→Conv3x3(16→16)→FC(672→128)→7 (89 671 парам.)"
+    hypothesis: >-
+      «Четыре в ряд» — один и тот же локальный узор в любом месте доски, а baseline пропускает 28,5%
+      побед в один ход, то есть не выучил даже этот простейший узор во всех 69 положениях. Мы считаем,
+      что свёртка 3x3 с общими весами выучит узор один раз для всех положений, поэтому пробуем CNN
+      с тем же числом параметров (чтобы отделить индуктивное смещение от ёмкости). Ожидание: рост macro
+      score и снижение доли пропущенных побед в один ход.
+    expected_error: missed_win_rate
+
+  - name: mix_cnn
+    id: H1+H2
+    label: "H1+H2: смесь соперников и свёрточная сеть"
+    factors: {mix: true, cnn: true}
+    overrides:
+      train.opponents: [random, tactical]
+      model.conv: [16, 16]
+      model.hidden: [128]
+    change: "оба изменения сразу"
+    hypothesis: >-
+      Факторы действуют на разные слабости (нет сигнала о защите / плохо видна структура доски),
+      поэтому мы считаем, что их эффекты сложатся: полная модель не хуже лучшего из одиночных улучшений.
+
+  # Дополнительное плечо только для абляции A3 (не входит в факторный план 2x2).
+  - name: tactical_mlp
+    id: A3
+    label: "Абляция смеси: обучение только против tactical, MLP"
+    factors: {mix: tactical_only, cnn: false}
+    overrides:
+      train.opponents: [tactical]
+    change: "train.opponents: [random] → [tactical] (random из смеси убран)"
+    hypothesis: >-
+      Проверка, что в H1 работает именно смесь, а не просто «более сильный соперник». Мы считаем,
+      что против одного тактика агент в начале обучения почти не выигрывает, поэтому сигнал о победах
+      беднеет, а навык использовать ошибки слабого соперника не формируется. Ожидание: tactical_mlp
+      хуже mix_mlp по macro score, прежде всего против random.
+
+# Абляции: из полной модели убираем по одному компоненту и смотрим, сколько теряем.
+ablations:
+  - name: "A1: убрать смесь соперников (mix_cnn → cnn_random)"
+    full: mix_cnn
+    ablated: cnn_random
+    removed: "обучение снова только против random, сеть CNN остаётся"
+  - name: "A2: убрать свёрточную сеть (mix_cnn → mix_mlp)"
+    full: mix_cnn
+    ablated: mix_mlp
+    removed: "сеть снова MLP 2×256, смесь соперников остаётся"
+
+  - name: "A3: убрать random из смеси (mix_mlp → tactical_mlp)"
+    full: mix_mlp
+    ablated: tactical_mlp
+    removed: "в пуле соперников остаётся только tactical; сеть MLP"
+
+# Улучшения относительно baseline. Критерий из README ДЗ1 §1: нижняя граница парного 95% ДИ разности
+# (новое минус baseline) больше нуля при ≥3 запусках И соответствующий тип ошибок становится реже.
+improvements:
+  - {name: "H1: смесь соперников", new: mix_mlp, ref: baseline_dqn, expected_error: missed_block_rate}
+  - {name: "H2: свёрточная сеть", new: cnn_random, ref: baseline_dqn, expected_error: missed_win_rate}
+  - {name: "H1+H2: оба изменения", new: mix_cnn, ref: baseline_dqn, expected_error: null}

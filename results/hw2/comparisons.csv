@@ -1,0 +1,8 @@
+key,kind,name,left,right,mean,std,ci_lo,ci_hi,per_seed,expected_error,error_before,error_after,verdict
+imp:mix_mlp,improvement,H1: смесь соперников,mix_mlp,baseline_dqn,-0.0339,0.0222,-0.0549,-0.0135,-0.0212 -0.0456 -0.0653 -0.0081 -0.0294,missed_block_rate,0.8635487826239271,0.703289296306282,✘ значимо хуже
+imp:cnn_random,improvement,H2: свёрточная сеть,cnn_random,baseline_dqn,-0.0157,0.0204,-0.0345,0.0026,-0.0344 -0.0162 -0.0375 +0.0044 +0.0053,missed_win_rate,0.27818355033343917,0.3318818040435459,○ шум: ДИ включает 0
+imp:mix_cnn,improvement,H1+H2: оба изменения,mix_cnn,baseline_dqn,-0.0482,0.0267,-0.0712,-0.0243,-0.0666 -0.0741 -0.0528 -0.0416 -0.0059,,,,✘ значимо хуже
+abl:cnn_random,ablation,A1: убрать смесь соперников (mix_cnn → cnn_random),mix_cnn,cnn_random,-0.0325,0.0198,-0.0517,-0.0131,-0.0322 -0.0578 -0.0153 -0.0459 -0.0113,,,,✘ значимо хуже
+abl:mix_mlp,ablation,A2: убрать свёрточную сеть (mix_cnn → mix_mlp),mix_cnn,mix_mlp,-0.0143,0.0303,-0.0411,0.0131,-0.0453 -0.0284 +0.0125 -0.0334 +0.0234,,,,○ шум: ДИ включает 0
+abl:tactical_mlp,ablation,A3: убрать random из смеси (mix_mlp → tactical_mlp),mix_mlp,tactical_mlp,-0.0153,0.016,-0.0346,0.0029,-0.0097 -0.0297 -0.0059 +0.0031 -0.0344,,,,○ шум: ДИ включает 0
+interaction,interaction,Взаимодействие факторов,,,0.0014,0.0336,-0.0283,0.0331,-0.0109 -0.0122 +0.0500 -0.0378 +0.0181,,,,○ аддитивно (ДИ включает 0)
