@@ -12,20 +12,22 @@ import torch
 from torch import nn
 
 from .agents import Agent
-from .board import COLS, ROWS, Board
+from .board import COLS, FEATURES, ROWS, Board
 
 
 class QNet(nn.Module):
-    """(2,6,7) -> Q(s, a) для 7 столбцов.
+    """(C,6,7) -> Q(s, a) для 7 столбцов; C = 2 (features="plain") или 4 (features="threats").
 
     conv: свёрточные слои 3x3 (padding=1, ReLU) -> flatten; затем полносвязные `hidden` -> 7.
     conv=[] даёт обычный MLP.
     """
 
-    def __init__(self, hidden=(256, 256), conv=()) -> None:
+    def __init__(self, hidden=(256, 256), conv=(), features: str = "plain") -> None:
         super().__init__()
+        if features not in FEATURES:
+            raise ValueError(f"unknown features: {features!r}")
         layers: list[nn.Module] = []
-        ch = 2
+        ch = 4 if features == "threats" else 2
         for k in conv:
             layers += [nn.Conv2d(ch, k, 3, padding=1), nn.ReLU()]
             ch = k
@@ -36,7 +38,7 @@ class QNet(nn.Module):
             d = h
         layers.append(nn.Linear(d, COLS))
         self.net = nn.Sequential(*layers)
-        self.hidden, self.conv = list(hidden), list(conv)
+        self.hidden, self.conv, self.features = list(hidden), list(conv), features
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x)
@@ -74,10 +76,11 @@ class DQNAgent(Agent):
 
     def __init__(self, net: QNet, name: str = "dqn") -> None:
         self.weights = numpy_weights(net)
+        self.features = getattr(net, "features", "plain")
         self.name = name
 
     def q_values(self, board: Board) -> np.ndarray:
-        return numpy_forward(self.weights, board.planes())
+        return numpy_forward(self.weights, board.planes(self.features))
 
     def act(self, board: Board, rng: np.random.Generator) -> int:
         q = self.q_values(board)
@@ -92,12 +95,13 @@ class DQNAgent(Agent):
 
 def save_checkpoint(path: str | Path, net: QNet, **meta) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    torch.save({"state_dict": net.state_dict(), "hidden": net.hidden, "conv": net.conv, **meta}, path)
+    torch.save({"state_dict": net.state_dict(), "hidden": net.hidden, "conv": net.conv,
+                "features": net.features, **meta}, path)
 
 
 def load_qnet(path: str | Path) -> QNet:
     ckpt = torch.load(path, map_location="cpu", weights_only=True)
-    net = QNet(ckpt["hidden"], ckpt.get("conv", []))
+    net = QNet(ckpt["hidden"], ckpt.get("conv", []), ckpt.get("features", "plain"))
     net.load_state_dict(ckpt["state_dict"])
     net.eval()
     return net

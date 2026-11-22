@@ -30,6 +30,7 @@ import numpy as np
 
 _W = "{weights}"
 _KINDS = {kinds}
+_FEATURES = "{features}"
 _DATA = np.load(io.BytesIO(base64.b64decode(_W)))
 WEIGHTS = [(k, _DATA["w%d" % i], _DATA["b%d" % i]) for i, k in enumerate(_KINDS)]
 
@@ -48,11 +49,36 @@ def _forward(x):
     return h
 
 
+def _threats(g, mark):
+    """Пустые клетки, где фишка `mark` достроит 4 в ряд (то же, что Board.threat_cells)."""
+    rows, cols = g.shape
+    out = np.zeros((rows, cols), dtype=np.float32)
+    for r in range(rows):
+        for c in range(cols):
+            if g[r, c] != 0:
+                continue
+            for dr, dc in ((0, 1), (1, 0), (1, 1), (1, -1)):
+                n = 1
+                for sgn in (1, -1):
+                    rr, cc = r + sgn * dr, c + sgn * dc
+                    while 0 <= rr < rows and 0 <= cc < cols and g[rr, cc] == mark:
+                        n += 1
+                        rr += sgn * dr
+                        cc += sgn * dc
+                if n >= 4:
+                    out[r, c] = 1.0
+                    break
+    return out
+
+
 def agent(observation, configuration):
     rows, cols = configuration.rows, configuration.columns
     g = np.asarray(observation.board, dtype=np.int8).reshape(rows, cols)
     me = observation.mark
-    x = np.stack([g == me, g == 3 - me]).astype(np.float32)
+    chans = [g == me, g == 3 - me]
+    if _FEATURES == "threats":
+        chans += [_threats(g, me), _threats(g, 3 - me)]
+    x = np.stack(chans).astype(np.float32)
     q = _forward(x)
     q[g[0] != 0] = -np.inf  # маска нелегальных ходов (заполненные столбцы)
     return int(np.argmax(q))
@@ -65,7 +91,8 @@ def export(ckpt: str, out: str) -> Path:
     buf = io.BytesIO()
     np.savez_compressed(buf, **{f"w{i}": w for i, (_, w, _) in enumerate(ws)},
                         **{f"b{i}": b for i, (_, _, b) in enumerate(ws)})
-    code = TEMPLATE.format(weights=base64.b64encode(buf.getvalue()).decode(), kinds=[k for k, _, _ in ws])
+    code = TEMPLATE.format(weights=base64.b64encode(buf.getvalue()).decode(), kinds=[k for k, _, _ in ws],
+                           features=net.features)
     path = Path(out)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(code)
@@ -97,7 +124,7 @@ def check(ckpt: str, path: Path, n_positions: int = 300, n_games: int = 4) -> di
             continue
         total += 1
         with torch.no_grad():
-            q_torch = net(torch.from_numpy(b.planes())[None])[0].numpy()
+            q_torch = net(torch.from_numpy(b.planes(net.features))[None])[0].numpy()
         q_numpy = ref.q_values(b)
         max_q_error = max(max_q_error, float(np.max(np.abs(q_torch - q_numpy))))
         np.testing.assert_allclose(q_torch, q_numpy, rtol=1e-4, atol=1e-5)

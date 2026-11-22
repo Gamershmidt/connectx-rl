@@ -87,11 +87,12 @@ def validate_training(cfg: dict, run_dir: Path) -> dict:
             checkpoint = torch.load(path, map_location="cpu", weights_only=True)
             if checkpoint.get("seed") != seed or checkpoint.get("episode") != episode:
                 raise ValueError(f"Checkpoint identity mismatch: {path}")
-            if checkpoint.get("hidden") != cfg["model"]["hidden"] or checkpoint.get("conv", []) != cfg["model"].get("conv", []):
+            if (checkpoint.get("hidden") != cfg["model"]["hidden"] or checkpoint.get("conv", []) != cfg["model"].get("conv", [])
+                    or checkpoint.get("features", "plain") != cfg["model"].get("features", "plain")):
                 raise ValueError(f"Checkpoint architecture mismatch: {path}")
             if name == "best" and abs(checkpoint.get("val", -1) - summary["best_val_macro"]) > 1e-10:
                 raise ValueError(f"Checkpoint validation score mismatch: {path}")
-            net = QNet(cfg["model"]["hidden"], cfg["model"].get("conv", []))
+            net = QNet(cfg["model"]["hidden"], cfg["model"].get("conv", []), cfg["model"].get("features", "plain"))
             net.load_state_dict(checkpoint["state_dict"], strict=True)
             if not all(torch.isfinite(v).all() for v in checkpoint["state_dict"].values()):
                 raise ValueError(f"Nonfinite weights in {path}")

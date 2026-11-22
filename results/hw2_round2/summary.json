@@ -1,0 +1,770 @@
+{
+ "test_cfg": {
+  "opponents": [
+   "random",
+   "tactical",
+   "lookahead",
+   "kaggle_negamax"
+  ],
+  "games_per_opponent": 400,
+  "seed": 4000,
+  "opening_plies": 2
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "arms": {
+  "baseline_dqn": {
+   "name": "baseline_dqn",
+   "n_seeds": 5,
+   "n_params": 89351,
+   "macro_mean": 0.28475,
+   "macro_std": 0.009551464220212535,
+   "macro_per_seed": [
+    0.2846875,
+    0.28843749999999996,
+    0.2984375,
+    0.2734375,
+    0.27874999999999994
+   ],
+   "macro_ci95": [
+    0.2734984375,
+    0.29674999999999996
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.9045,
+     "std": 0.01451292527370001,
+     "first": 0.952,
+     "second": 0.857,
+     "mean_length": 11.0845
+    },
+    "tactical": {
+     "mean": 0.1965,
+     "std": 0.029730560875974074,
+     "first": 0.27149999999999996,
+     "second": 0.12150000000000001,
+     "mean_length": 17.273000000000003
+    },
+    "lookahead": {
+     "mean": 0.0005,
+     "std": 0.001118033988749895,
+     "first": 0.001,
+     "second": 0.0,
+     "mean_length": 13.0125
+    },
+    "kaggle_negamax": {
+     "mean": 0.0375,
+     "std": 0.009642030387838445,
+     "first": 0.0505,
+     "second": 0.0245,
+     "mean_length": 17.2825
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.5685,
+   "val_best_per_seed": [
+    0.58875,
+    0.5675,
+    0.56625,
+    0.555,
+    0.5650000000000001
+   ],
+   "best_episode_mean": 53600.0,
+   "train_time_min": 10.774,
+   "steps_mean": 414758.2,
+   "updates_mean": 350224.6,
+   "missed_win_rate": 0.30827754108338407,
+   "missed_win_rate_by_opponent": {
+    "random": 0.25555555555555554,
+    "tactical": 0.432510885341074,
+    "lookahead": 0.0,
+    "kaggle_negamax": 0.5662650602409639
+   },
+   "missed_block_rate": 0.8699559471365639,
+   "missed_block_rate_by_opponent": {
+    "random": 0.8585572842998586,
+    "tactical": 0.8327574291637871,
+    "lookahead": 0.8996742671009772,
+    "kaggle_negamax": 0.878147029204431
+   },
+   "blunder_rate": 0.23116883116883116,
+   "blunder_rate_by_opponent": {
+    "random": 0.205607476635514,
+    "tactical": 0.21885521885521886,
+    "lookahead": 0.23345817727840198,
+    "kaggle_negamax": 0.3253968253968254
+   }
+  },
+  "threats_mlp": {
+   "name": "threats_mlp",
+   "n_seeds": 5,
+   "n_params": 110855,
+   "macro_mean": 0.28650000000000003,
+   "macro_std": 0.005463837078921742,
+   "macro_per_seed": [
+    0.285,
+    0.289375,
+    0.2784375,
+    0.293125,
+    0.2865625
+   ],
+   "macro_ci95": [
+    0.2755578125,
+    0.2975
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.8895,
+     "std": 0.008732124598286517,
+     "first": 0.9570000000000001,
+     "second": 0.8220000000000001,
+     "mean_length": 10.9635
+    },
+    "tactical": {
+     "mean": 0.20725,
+     "std": 0.017419457511644847,
+     "first": 0.273,
+     "second": 0.14150000000000001,
+     "mean_length": 16.913
+    },
+    "lookahead": {
+     "mean": 0.0,
+     "std": 0.0,
+     "first": 0.0,
+     "second": 0.0,
+     "mean_length": 13.023
+    },
+    "kaggle_negamax": {
+     "mean": 0.04925,
+     "std": 0.009905806378079475,
+     "first": 0.06849999999999999,
+     "second": 0.03,
+     "mean_length": 18.0215
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.5772499999999999,
+   "val_best_per_seed": [
+    0.585,
+    0.57875,
+    0.5675,
+    0.5800000000000001,
+    0.575
+   ],
+   "best_episode_mean": 52200.0,
+   "train_time_min": 123.77733333333332,
+   "steps_mean": 399765.2,
+   "updates_mean": 335234.0,
+   "missed_win_rate": 0.2644308287649145,
+   "missed_win_rate_by_opponent": {
+    "random": 0.22786458333333334,
+    "tactical": 0.3546875,
+    "lookahead": null,
+    "kaggle_negamax": 0.43312101910828027
+   },
+   "missed_block_rate": 0.7851742274819198,
+   "missed_block_rate_by_opponent": {
+    "random": 0.7827102803738317,
+    "tactical": 0.7775616083009079,
+    "lookahead": 0.7786989795918368,
+    "kaggle_negamax": 0.7965061378659113
+   },
+   "blunder_rate": 0.23000898472596587,
+   "blunder_rate_by_opponent": {
+    "random": 0.25862068965517243,
+    "tactical": 0.24234354194407456,
+    "lookahead": 0.20789685737308622,
+    "kaggle_negamax": 0.3559322033898305
+   }
+  },
+  "shaped_mlp": {
+   "name": "shaped_mlp",
+   "n_seeds": 5,
+   "n_params": 89351,
+   "macro_mean": 0.2914375,
+   "macro_std": 0.0027296834752403264,
+   "macro_per_seed": [
+    0.2875,
+    0.2896875,
+    0.29281250000000003,
+    0.29375,
+    0.2934375
+   ],
+   "macro_ci95": [
+    0.2822484375,
+    0.301628125
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.9099999999999999,
+     "std": 0.011592023119369634,
+     "first": 0.9400000000000001,
+     "second": 0.8799999999999999,
+     "mean_length": 12.005
+    },
+    "tactical": {
+     "mean": 0.192,
+     "std": 0.012266570425347099,
+     "first": 0.2505,
+     "second": 0.1335,
+     "mean_length": 18.7715
+    },
+    "lookahead": {
+     "mean": 0.0005,
+     "std": 0.001118033988749895,
+     "first": 0.0,
+     "second": 0.001,
+     "mean_length": 14.366499999999998
+    },
+    "kaggle_negamax": {
+     "mean": 0.06325,
+     "std": 0.009746794344808962,
+     "first": 0.07,
+     "second": 0.05650000000000001,
+     "mean_length": 20.651500000000002
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.57575,
+   "val_best_per_seed": [
+    0.5874999999999999,
+    0.58875,
+    0.5650000000000001,
+    0.5650000000000001,
+    0.5725
+   ],
+   "best_episode_mean": 55600.0,
+   "train_time_min": 123.94933333333334,
+   "steps_mean": 448415.6,
+   "updates_mean": 383882.0,
+   "missed_win_rate": 0.27000630119722746,
+   "missed_win_rate_by_opponent": {
+    "random": 0.21382289416846653,
+    "tactical": 0.40345368916797486,
+    "lookahead": 0.0,
+    "kaggle_negamax": 0.4751131221719457
+   },
+   "missed_block_rate": 0.6803104077906269,
+   "missed_block_rate_by_opponent": {
+    "random": 0.6717557251908397,
+    "tactical": 0.711706102117061,
+    "lookahead": 0.6571113561190739,
+    "kaggle_negamax": 0.6796280642434489
+   },
+   "blunder_rate": 0.20693314467633533,
+   "blunder_rate_by_opponent": {
+    "random": 0.15104166666666666,
+    "tactical": 0.2096317280453258,
+    "lookahead": 0.20753323485967504,
+    "kaggle_negamax": 0.23873873873873874
+   }
+  },
+  "threats_shaped_mlp": {
+   "name": "threats_shaped_mlp",
+   "n_seeds": 5,
+   "n_params": 110855,
+   "macro_mean": 0.34487500000000004,
+   "macro_std": 0.008141809534741038,
+   "macro_per_seed": [
+    0.353125,
+    0.341875,
+    0.34,
+    0.335625,
+    0.35375
+   ],
+   "macro_ci95": [
+    0.3335,
+    0.3573125
+   ],
+   "per_opponent": {
+    "random": {
+     "mean": 0.9650000000000001,
+     "std": 0.00586301969977928,
+     "first": 0.984,
+     "second": 0.946,
+     "mean_length": 10.769
+    },
+    "tactical": {
+     "mean": 0.29274999999999995,
+     "std": 0.018632968094214077,
+     "first": 0.3815,
+     "second": 0.20400000000000001,
+     "mean_length": 19.472500000000004
+    },
+    "lookahead": {
+     "mean": 0.0075000000000000015,
+     "std": 0.007705517503711221,
+     "first": 0.015000000000000003,
+     "second": 0.0,
+     "mean_length": 14.8845
+    },
+    "kaggle_negamax": {
+     "mean": 0.11424999999999999,
+     "std": 0.01690044378115557,
+     "first": 0.128,
+     "second": 0.10049999999999999,
+     "mean_length": 22.8345
+    }
+   },
+   "illegal_rate": 0.0,
+   "val_best_mean": 0.657,
+   "val_best_per_seed": [
+    0.6525,
+    0.65375,
+    0.655,
+    0.6575,
+    0.66625
+   ],
+   "best_episode_mean": 46800.0,
+   "train_time_min": 123.89233333333331,
+   "steps_mean": 401624.2,
+   "updates_mean": 337093.0,
+   "missed_win_rate": 0.10197368421052631,
+   "missed_win_rate_by_opponent": {
+    "random": 0.046442687747035576,
+    "tactical": 0.22281879194630871,
+    "lookahead": 0.11764705882352941,
+    "kaggle_negamax": 0.1889763779527559
+   },
+   "missed_block_rate": 0.4890793475255737,
+   "missed_block_rate_by_opponent": {
+    "random": 0.348294434470377,
+    "tactical": 0.5215749730312838,
+    "lookahead": 0.4796380090497738,
+    "kaggle_negamax": 0.5021171489061397
+   },
+   "blunder_rate": 0.2621866295264624,
+   "blunder_rate_by_opponent": {
+    "random": 0.267515923566879,
+    "tactical": 0.23759541984732824,
+    "lookahead": 0.2562814070351759,
+    "kaggle_negamax": 0.38321167883211676
+   }
+  }
+ },
+ "references": {
+  "random": {
+   "macro": 0.1425,
+   "macro_ci95": [
+    0.12906250000000002,
+    0.15625
+   ],
+   "per_opponent": {
+    "random": 0.49375,
+    "tactical": 0.03875,
+    "lookahead": 0.0,
+    "kaggle_negamax": 0.0375
+   },
+   "missed_win_rate": 0.7875354107648725,
+   "missed_block_rate": 0.84,
+   "blunder_rate": 0.22433460076045628
+  },
+  "tactical": {
+   "macro": 0.47625,
+   "macro_ci95": [
+    0.4596875,
+    0.49375
+   ],
+   "per_opponent": {
+    "random": 0.96625,
+    "tactical": 0.51,
+    "lookahead": 0.0325,
+    "kaggle_negamax": 0.39625
+   },
+   "missed_win_rate": 0.0,
+   "missed_block_rate": 0.0,
+   "blunder_rate": 0.0
+  },
+  "lookahead": {
+   "macro": 0.8484375,
+   "macro_ci95": [
+    0.835,
+    0.8615625
+   ],
+   "per_opponent": {
+    "random": 1.0,
+    "tactical": 0.95875,
+    "lookahead": 0.4775,
+    "kaggle_negamax": 0.9575
+   },
+   "missed_win_rate": 0.0,
+   "missed_block_rate": 0.036709721278042146,
+   "blunder_rate": 0.0
+  }
+ },
+ "comparisons": {
+  "imp:threats_mlp": {
+   "mean": 0.0017500000000000003,
+   "std": 0.014442098834656962,
+   "per_seed": [
+    0.00031249999999999984,
+    0.0009375000000000002,
+    -0.02,
+    0.0196875,
+    0.0078125
+   ],
+   "ci95": [
+    -0.0141875,
+    0.016442187499999976
+   ],
+   "coefs": {
+    "threats_mlp": 1,
+    "baseline_dqn": -1
+   },
+   "kind": "improvement",
+   "name": "H3: признаки угроз",
+   "left": "threats_mlp",
+   "right": "baseline_dqn",
+   "expected_error": "missed_win_rate",
+   "error_before": 0.30827754108338407,
+   "error_after": 0.2644308287649145,
+   "verdict": "○ шум: ДИ включает 0"
+  },
+  "imp:shaped_mlp": {
+   "mean": 0.006687499999999999,
+   "std": 0.010557228714250725,
+   "per_seed": [
+    0.0028124999999999995,
+    0.0012499999999999994,
+    -0.0056250000000000015,
+    0.0203125,
+    0.0146875
+   ],
+   "ci95": [
+    -0.005440624999999999,
+    0.019314062499999993
+   ],
+   "coefs": {
+    "shaped_mlp": 1,
+    "baseline_dqn": -1
+   },
+   "kind": "improvement",
+   "name": "H4: штраф за ошибку",
+   "left": "shaped_mlp",
+   "right": "baseline_dqn",
+   "expected_error": "missed_block_rate",
+   "error_before": 0.8699559471365639,
+   "error_after": 0.6803104077906269,
+   "verdict": "○ шум: ДИ включает 0"
+  },
+  "imp:threats_shaped_mlp": {
+   "mean": 0.060125000000000005,
+   "std": 0.013075800644702413,
+   "per_seed": [
+    0.0684375,
+    0.05343750000000001,
+    0.041562499999999995,
+    0.0621875,
+    0.07500000000000001
+   ],
+   "ci95": [
+    0.0456875,
+    0.0755
+   ],
+   "coefs": {
+    "threats_shaped_mlp": 1,
+    "baseline_dqn": -1
+   },
+   "kind": "improvement",
+   "name": "H3+H4: оба изменения",
+   "left": "threats_shaped_mlp",
+   "right": "baseline_dqn",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "✔ ДИ > 0"
+  },
+  "abl:shaped_mlp": {
+   "mean": 0.053437500000000006,
+   "std": 0.009619214982263364,
+   "per_seed": [
+    0.065625,
+    0.052187500000000005,
+    0.04718750000000001,
+    0.041874999999999996,
+    0.06031249999999999
+   ],
+   "ci95": [
+    0.04093281249999999,
+    0.0669375
+   ],
+   "coefs": {
+    "threats_shaped_mlp": 1,
+    "shaped_mlp": -1
+   },
+   "kind": "ablation",
+   "name": "A4: убрать признаки угроз (threats_shaped_mlp → shaped_mlp)",
+   "left": "threats_shaped_mlp",
+   "right": "shaped_mlp",
+   "removed": "вход снова 2 плоскости, штраф остаётся",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "✔ ДИ > 0"
+  },
+  "abl:threats_mlp": {
+   "mean": 0.058374999999999996,
+   "std": 0.010832982766763729,
+   "per_seed": [
+    0.06812499999999999,
+    0.0525,
+    0.06156249999999999,
+    0.0425,
+    0.0671875
+   ],
+   "ci95": [
+    0.0443109375,
+    0.0725640625
+   ],
+   "coefs": {
+    "threats_shaped_mlp": 1,
+    "threats_mlp": -1
+   },
+   "kind": "ablation",
+   "name": "A5: убрать штраф (threats_shaped_mlp → threats_mlp)",
+   "left": "threats_shaped_mlp",
+   "right": "threats_mlp",
+   "removed": "награда снова только за исход, признаки угроз остаются",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "✔ ДИ > 0"
+  },
+  "interaction": {
+   "mean": 0.0516875,
+   "std": 0.018006888872734238,
+   "per_seed": [
+    0.0653125,
+    0.05124999999999999,
+    0.06718750000000001,
+    0.022187500000000002,
+    0.052500000000000005
+   ],
+   "ci95": [
+    0.0305609375,
+    0.0715015625
+   ],
+   "coefs": {
+    "threats_shaped_mlp": 1,
+    "threats_mlp": -1,
+    "shaped_mlp": -1,
+    "baseline_dqn": 1
+   },
+   "kind": "interaction",
+   "name": "Взаимодействие: эффект штрафа при признаках угроз минус эффект штрафа без них",
+   "left": "",
+   "right": "",
+   "expected_error": null,
+   "error_before": null,
+   "error_after": null,
+   "verdict": "✔ взаимодействие есть"
+  }
+ },
+ "registry": {
+  "name": "hw2_round2",
+  "base_config": "configs/baseline.yaml",
+  "design": {
+   "factors": [
+    "threats",
+    "shaping"
+   ],
+   "labels": {
+    "threats": [
+     "вход: фишки",
+     "вход: фишки + угрозы"
+    ],
+    "shaping": [
+     "награда: только исход",
+     "награда: исход + штраф за ошибку"
+    ]
+   },
+   "interaction": "Взаимодействие: эффект штрафа при признаках угроз минус эффект штрафа без них"
+  },
+  "report": {
+   "file": "homework2.md",
+   "tag": "r2"
+  },
+  "test": {
+   "opponents": [
+    "random",
+    "tactical",
+    "lookahead",
+    "kaggle_negamax"
+   ],
+   "games_per_opponent": 400,
+   "seed": 4000,
+   "opening_plies": 2
+  },
+  "arms": [
+   {
+    "name": "baseline_dqn",
+    "id": "H0",
+    "label": "Baseline ДЗ1: MLP 2×256, вход 2 плоскости, награда только за исход",
+    "factors": {
+     "threats": false,
+     "shaping": false
+    },
+    "reuse_runs": "runs/baseline_dqn",
+    "change": "нет (точка отсчёта)",
+    "hypothesis": "Точка отсчёта. Ожидаем ~0,29 на новом тесте, как на тестах ДЗ1 (0,293) и раунда 1 (0,285)."
+   },
+   {
+    "name": "threats_mlp",
+    "id": "H3",
+    "label": "H3: признаки угроз на входе сети",
+    "factors": {
+     "threats": true,
+     "shaping": false
+    },
+    "overrides": {
+     "model.features": "threats"
+    },
+    "change": "model.features: plain → threats (вход 2×6×7 → 4×6×7: + клетки немедленной победы своей и соперника)",
+    "hypothesis": "Baseline пропускает 28% побед в один ход и 86% блоков, а свёрточная сеть при том же числе параметров (H2) этого не изменила: сети не хватает не способа смотреть на доску, а сигнала, чтобы выучить 69 узоров. Мы считаем, что если дать узор готовым признаком (две плоскости: где достраивает четвёрку ходящий, где соперник), сети останется лишь связать признак с ценностью, поэтому пробуем те же MLP, соперника и бюджет с четырьмя входными плоскостями. Ожидание: рост macro score, снижение доли пропущенных побед и пропущенных блоков.",
+    "expected_error": "missed_win_rate"
+   },
+   {
+    "name": "shaped_mlp",
+    "id": "H4",
+    "label": "H4: штраф за тактическую ошибку в награде",
+    "factors": {
+     "threats": false,
+     "shaping": true
+    },
+    "overrides": {
+     "train.shaping": {
+      "missed_win": 0.5,
+      "missed_block": 0.5
+     }
+    },
+    "change": "train.shaping: {} → {missed_win: 0.5, missed_block: 0.5} (−0,5 к награде перехода за пропущенную победу или незакрытую угрозу)",
+    "hypothesis": "В раунде 1 защита улучшалась только у плеч, где соперник (тактик) наказывал каждую незакрытую угрозу, но ценой умения добивать random. Мы считаем, что наказывать ошибку должен сигнал обучения, а не соперник: тогда соперник может остаться random (нападение сохраняется), а защита всё равно выучится. Поэтому пробуем штраф −0,5 за пропущенную победу и за незакрытую угрозу. Ожидание: рост macro score и снижение доли пропущенных блоков при сохранении игры против random.",
+    "expected_error": "missed_block_rate"
+   },
+   {
+    "name": "threats_shaped_mlp",
+    "id": "H3+H4",
+    "label": "H3+H4: признаки угроз и штраф за ошибку",
+    "factors": {
+     "threats": true,
+     "shaping": true
+    },
+    "overrides": {
+     "model.features": "threats",
+     "train.shaping": {
+      "missed_win": 0.5,
+      "missed_block": 0.5
+     }
+    },
+    "change": "оба изменения сразу",
+    "hypothesis": "Признаки говорят сети, где угроза, штраф говорит, что её нельзя пропускать. Мы считаем, что изменения дополняют друг друга (признак без штрафа может остаться невостребованным, штраф без признака требует выучить узор), поэтому ожидаем, что полная модель не хуже лучшего одиночного улучшения, а взаимодействие положительное."
+   }
+  ],
+  "ablations": [
+   {
+    "name": "A4: убрать признаки угроз (threats_shaped_mlp → shaped_mlp)",
+    "full": "threats_shaped_mlp",
+    "ablated": "shaped_mlp",
+    "removed": "вход снова 2 плоскости, штраф остаётся"
+   },
+   {
+    "name": "A5: убрать штраф (threats_shaped_mlp → threats_mlp)",
+    "full": "threats_shaped_mlp",
+    "ablated": "threats_mlp",
+    "removed": "награда снова только за исход, признаки угроз остаются"
+   }
+  ],
+  "improvements": [
+   {
+    "name": "H3: признаки угроз",
+    "new": "threats_mlp",
+    "ref": "baseline_dqn",
+    "expected_error": "missed_win_rate"
+   },
+   {
+    "name": "H4: штраф за ошибку",
+    "new": "shaped_mlp",
+    "ref": "baseline_dqn",
+    "expected_error": "missed_block_rate"
+   },
+   {
+    "name": "H3+H4: оба изменения",
+    "new": "threats_shaped_mlp",
+    "ref": "baseline_dqn",
+    "expected_error": null
+   }
+  ]
+ },
+ "environment": {
+  "python": "3.11.16",
+  "torch": "2.15.0",
+  "numpy": "2.4.6",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "processor": "arm"
+ },
+ "checkpoints": {
+  "baseline_dqn": {
+   "0": "0356e9566fb26ccda537b88bc2123490ab831be10fe9da619a8266d0e16adf12",
+   "1": "2cc7dc8302c917e823cc77cc0861aa2b189445525c000a12b7f8fd8e82706ee4",
+   "2": "51819230e2023c01d9dde0b046772ccdcd3af3c386a1d218ef20bec98b03f6a1",
+   "3": "132792043d0b0c30096e092883661dc7d8d25545a031807da7eb414ecf9703aa",
+   "4": "4ded63e0ef6f10bc85f79cff16f67ce0c477f502166aa5a3390453f564cd6f39"
+  },
+  "threats_mlp": {
+   "0": "151b9401d3af45adbffeb7b28de25df73761eec47d456e31ac9a3f6cb02a5536",
+   "1": "2a05b007ef3e3293125856dbd4f30cbf5ce4e338b46414993086eab172a7bda5",
+   "2": "ec8a8531417a22b551c01fb49fca22819b1a8bba36b08d359029e05067bc1ab5",
+   "3": "9355501742ad077844ac9206cab0d2670900531deb293cd1a85ec3e4c6efaae0",
+   "4": "09271067572935a793a2466b1fd818da9abbad679feebedbbb09fcbc6f3d1266"
+  },
+  "shaped_mlp": {
+   "0": "d56c4f2d8c54c73b18e4fde85a4f387565f0bc349ab9dbe325e61b47dcbb5add",
+   "1": "869bc17e2f740993f03e8d98a33b9bea99b035079ab22d2f90fc869abafc897d",
+   "2": "73520906b3507937f995a6a336114757cbf816a70e56e4c6e3c10c5fe90a0436",
+   "3": "c50f79fb18de2723edcef093b519d3c38f14248931ee021cbb70cec8036e3ea9",
+   "4": "2ce95f3a3da271b80924fab75294390c681121c948dea3ddf6276d32ffaf9e20"
+  },
+  "threats_shaped_mlp": {
+   "0": "6d77beac17ef9585ab781a0dff74710ff0bc4d912f3a7649388a9c0b77399d2e",
+   "1": "446b591d6fb249a7b728905225f668727aff4bc31cdf75fd91a1b71b60953f6f",
+   "2": "2bd79221dd6affd8131de0f312800f5b5f1d0bb1f7fdd5fb627abf2e0d1f76ca",
+   "3": "6ce792e1a85daad14587e105e62049f71b8579d1351ca4e8e1c84fd2247e90d2",
+   "4": "7b96524c57c68dca16c00b140350f1f9d02b03f717ef96f9a60545809d80c377"
+  }
+ },
+ "fairness": {
+  "val_identical": true,
+  "test_identical": true,
+  "val_seed": 1000,
+  "test_seed": 4000,
+  "hw1_test_seed": 2000,
+  "shared_train_keys": [
+   "opponents",
+   "episodes",
+   "gamma",
+   "lr",
+   "batch_size",
+   "buffer_size",
+   "warmup_transitions",
+   "train_every",
+   "target_update_every",
+   "double_dqn",
+   "target_clip",
+   "grad_clip",
+   "eps_start",
+   "eps_end",
+   "eps_decay_episodes",
+   "log_every",
+   "val_every"
+  ],
+  "differing_train_keys": [
+   "shaping"
+  ],
+  "checkpoint_rule": "best.pt = максимум val_macro по истории обучения (проверено для каждого сида)"
+ }
+}

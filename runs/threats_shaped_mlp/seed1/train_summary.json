@@ -1,0 +1,15 @@
+{
+ "seed": 1,
+ "best_val_macro": 0.65375,
+ "best_episode": 47000,
+ "train_time_s": 7433.8,
+ "steps": 401794,
+ "updates": 337250,
+ "env": {
+  "python": "3.11.16",
+  "torch": "2.15.0",
+  "numpy": "2.4.6",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "processor": "arm"
+ }
+}

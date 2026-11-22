@@ -21,6 +21,36 @@ _TOP = [1 << (c * H + ROWS - 1) for c in range(COLS)]
 _COL_MASK = [((1 << ROWS) - 1) << (c * H) for c in range(COLS)]
 # бит -> (row_from_top, col) для конвертации в матрицу
 _BIT_TO_RC = {c * H + r: (ROWS - 1 - r, c) for c in range(COLS) for r in range(ROWS)}
+BOARD_MASK = sum(((1 << ROWS) - 1) << (c * H) for c in range(COLS))  # все 42 игровые клетки
+FEATURES = ("plain", "threats")
+
+
+def completing_cells(bb: int, mask: int) -> int:
+    """Пустые клетки, куда фишка игрока с битбордом `bb` достроила бы 4 в ряд (схема P. Pons).
+
+    Не все такие клетки доступны прямо сейчас (под ними может быть пусто): это и немедленные
+    победы, и «висящие» угрозы. `mask` — все занятые клетки.
+    """
+    r = (bb << 1) & (bb << 2) & (bb << 3)  # вертикаль: три фишки подряд снизу
+    for d in (H, H - 1, H + 1):  # горизонталь и две диагонали
+        p = (bb << d) & (bb << 2 * d)
+        r |= p & (bb << 3 * d)
+        r |= p & (bb >> d)
+        p = (bb >> d) & (bb >> 2 * d)
+        r |= p & (bb << d)
+        r |= p & (bb >> 3 * d)
+    return r & BOARD_MASK & ~mask
+
+
+def bits_to_grid(bb: int) -> np.ndarray:
+    """Битборд -> матрица 6x7 из 0/1 в формате Kaggle (строка 0 — верхняя)."""
+    g = np.zeros((ROWS, COLS), dtype=np.float32)
+    while bb:
+        low = bb & -bb
+        r, c = _BIT_TO_RC[low.bit_length() - 1]
+        g[r, c] = 1.0
+        bb ^= low
+    return g
 
 
 def has_won(bb: int) -> bool:
@@ -138,16 +168,30 @@ class Board:
     def to_kaggle_board(self) -> list[int]:
         return self.to_grid().reshape(-1).tolist()
 
-    def planes(self) -> np.ndarray:
-        """Признаки для нейросети с точки зрения ходящего игрока: (2, 6, 7) float32.
+    def threat_cells(self, player: int | None = None) -> int:
+        """Битборд пустых клеток, где `player` достроил бы 4 в ряд (включая недоступные сейчас)."""
+        if player is None:
+            player = self.n_moves & 1
+        return completing_cells(self.bb[player], self.mask)
 
-        Канал 0 — фишки ходящего игрока, канал 1 — фишки соперника.
-        Каноническая перспектива позволяет одной сети играть за обе стороны.
+    def planes(self, features: str = "plain") -> np.ndarray:
+        """Признаки для нейросети с точки зрения ходящего игрока: (C, 6, 7) float32.
+
+        features="plain" (baseline): канал 0 — фишки ходящего игрока, канал 1 — фишки соперника.
+        features="threats" (ДЗ2, H3): плюс канал 2 — клетки, где ходящий достроит 4 в ряд,
+        канал 3 — клетки, где это сделает соперник. Каноническая перспектива позволяет
+        одной сети играть за обе стороны.
         """
         g = self.to_grid()
         me = self.to_move + 1
         opp = 3 - me
-        return np.stack([(g == me), (g == opp)]).astype(np.float32)
+        chans = [(g == me).astype(np.float32), (g == opp).astype(np.float32)]
+        if features == "threats":
+            p = self.to_move
+            chans += [bits_to_grid(self.threat_cells(p)), bits_to_grid(self.threat_cells(1 - p))]
+        elif features != "plain":
+            raise ValueError(f"unknown features: {features!r}, expected one of {FEATURES}")
+        return np.stack(chans)
 
     @classmethod
     def from_kaggle(cls, board: list[int], mark: int | None = None) -> "Board":

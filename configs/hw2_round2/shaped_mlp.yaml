@@ -1,0 +1,53 @@
+# Сгенерировано: python -m connectx_rl.hw2 --stage configs (из configs/hw2_round2/experiments.yaml).
+# Плечо shaped_mlp: H4: штраф за тактическую ошибку в награде
+# Отличия от configs/baseline.yaml: train.shaping: {} → {missed_win: 0.5, missed_block: 0.5} (−0,5 к награде перехода за пропущенную победу или незакрытую угрозу)
+experiment: shaped_mlp
+seeds:
+- 0
+- 1
+- 2
+- 3
+- 4
+model:
+  hidden:
+  - 256
+  - 256
+train:
+  opponents:
+  - random
+  episodes: 60000
+  gamma: 0.9
+  lr: 0.0005
+  batch_size: 256
+  buffer_size: 100000
+  warmup_transitions: 5000
+  train_every: 1
+  target_update_every: 1000
+  double_dqn: true
+  target_clip: 1.0
+  grad_clip: 10.0
+  eps_start: 1.0
+  eps_end: 0.05
+  eps_decay_episodes: 30000
+  log_every: 1000
+  val_every: 1000
+  shaping:
+    missed_win: 0.5
+    missed_block: 0.5
+eval:
+  val:
+    opponents:
+    - random
+    - tactical
+    games_per_opponent: 200
+    seed: 1000
+    opening_plies: 2
+  test:
+    opponents:
+    - random
+    - tactical
+    - lookahead
+    - kaggle_negamax
+    games_per_opponent: 400
+    seed: 4000
+    opening_plies: 2
